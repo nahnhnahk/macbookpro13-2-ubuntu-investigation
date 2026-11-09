@@ -6,6 +6,8 @@ Ubuntu can install its next stock kernel. DKMS and the installed image/header ho
 
 The recovery helper, deep-sleep configuration and standalone acpidbg remain installed outside version-specific kernel directories. A build failure or changed source/artifact is reported; an unapproved running kernel is refused before firmware recovery starts.
 
+The Apple CS8409 speaker driver is currently a manual module for `7.0.14-mbp132-tb1` only. A new kernel will be silent unless the [DKMS setup](AUDIO.md#keeping-it-working-across-kernel-upgrades) has been completed and its build succeeds. Run `audio/verify-speaker-driver.sh` after each kernel install.
+
 GRUB continues to boot `7.0.14-mbp132-tb1`, which was explicitly promoted. A newly installed kernel does not silently replace that validated default. Its entry can still be selected for deliberate testing.
 
 ## Maintenance obligation
@@ -16,7 +18,7 @@ For each future base kernel:
 
 1. Check whether its source already contains the necessary fixes and review upstream changes.
 2. Adapt/rebuild where needed, using a separate release name and retaining a working fallback.
-3. Build/export headers, verify the T1 modules and runtime client, then validate hardware and actual sleep duration.
+3. Build/export headers, verify the T1 modules, the CS8409 speaker module (built from the same `linux-source` version) and runtime client, then validate hardware and actual sleep duration.
 4. Test ordinary lid-close/open behavior and both controller sides; promote the replacement only after evidence passes.
 5. Record exact versions, patches, tests and limitations in this repository.
 

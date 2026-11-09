@@ -1,8 +1,10 @@
-# MacBookPro13,2 Ubuntu suspend and Ethernet investigation
+# MacBookPro13,2 Ubuntu suspend, Ethernet and audio investigation
 
 Current state, investigation history, source changes, and measured validation for a 2016 Touch Bar MacBook Pro running Ubuntu. Snapshot: **2026-11-08**; dates and human-readable log times use America/Los_Angeles unless marked UTC.
 
 The machine now boots **7.0.14-mbp132-tb1**, a separate kernel built from Ubuntu `linux-source-7.0.0=7.0.0-43.43`. Three closed-lid trials preserved Ethernet and T1 recovery, including **2 hours 45 minutes of uninterrupted deep sleep** and use of both USB-C controller sides. GRUB's promoted default was verified locally. The stock `7.0.0-43-generic` fallback remains installed.
+
+**Internal speakers** were silent after the Ubuntu install because the in-tree CS8409 driver never initializes Apple's speaker amplifiers, and the community driver had been registered with DKMS but never built. An Apple-patched driver now plays sound on the running kernel. DKMS setup for automatic rebuilds on kernel upgrades is documented but not yet completed: see [Internal speakers](docs/AUDIO.md).
 
 **Open-lid suspend can still wake after about three seconds.** Lid events and firmware interrupt GPE `6F` are the leading evidence; the exact cause is unresolved. Lid-opening wake remains enabled.
 
@@ -18,6 +20,7 @@ The machine now boots **7.0.14-mbp132-tb1**, a separate kernel built from Ubuntu
 - [Investigation](docs/INVESTIGATION.md): symptoms, evidence, unsuccessful hypotheses, and fixes.
 - [Timeline](docs/TIMELINE.md): chronological decisions, implementation mistakes, and corrections.
 - [Validation](docs/VALIDATION.md): timing method, evidence bundles, and what “passed” means.
+- [Internal speakers](docs/AUDIO.md): cause, applied fix and how to keep it through kernel upgrades.
 - [Kernel upgrades and rollback](docs/UPGRADES-AND-ROLLBACK.md): what is automatic and what still requires maintenance.
 - [Reproducing the build](docs/REPRODUCING.md): exact source, patch provenance, configuration differences, and archive limitations.
 - [Open questions](docs/OPEN-QUESTIONS.md) and [maintenance workflow](docs/MAINTENANCE.md).
@@ -27,7 +30,7 @@ The machine now boots **7.0.14-mbp132-tb1**, a separate kernel built from Ubuntu
 
 `kernel-test/` preserves the kernel preparation, packaging, verification, promotion/rollback and T1 upgrade-support source. `kernel-test/apple-ib-driver/` contains the reviewed driver checkpoint. The consolidated kernel backport is [here](kernel-test/patches/ubuntu-7.0.0-43-mbp132-backport.patch); the independent Touch Bar lifecycle patch is [here](patches/touchbar-lifecycle.patch).
 
-`configuration/` contains reviewed configuration examples. `evidence/` contains sanitized build records and selected validation captures. The original `result.json` files are retained: a read-only post-wake pass is separate from independent proof of sleep duration. One older false-positive report is retained and explicitly identified in the validation document.
+`audio/` contains the CS8409 driver source-lookup patch, the manual install helper and a read-only speaker-driver check. `configuration/` contains reviewed configuration examples. `evidence/` contains sanitized build records and selected validation captures. The original `result.json` files are retained: a read-only post-wake pass is separate from independent proof of sleep duration. One older false-positive report is retained and explicitly identified in the validation document.
 
 This is a **machine-specific source and evidence archive**. Installation requires locally built artifacts, regenerated integrity records and review of hardware-specific assumptions. Runtime binaries, kernel packages and build directories are excluded. Public interface names, home paths, network addresses, UUIDs and boot IDs use placeholders; see [publication handling](docs/PUBLICATION.md).
 

@@ -1,0 +1,50 @@
+SPDX-License-Identifier: GPL-2.0-only
+Local patch for https://github.com/davidjo/snd_hda_macbookpro at commit
+89b22ff90b86468b186706861dd18663562defa7 (install.cirrus.driver.sh).
+
+On Ubuntu the script needs /usr/src/linux-source-$kernel_version.tar.bz2, with
+$kernel_version taken from the kernel release (text before the first '-').
+Ubuntu's package is always named after the base release, linux-source-X.Y.0,
+so a custom kernel built from it (here 7.0.14-mbp132-tb1) looks for a
+nonexistent linux-source-7.0.14 tarball and the DKMS pre_build step fails.
+This falls back to linux-source-X.Y.0 and takes the tar member prefix from the
+selected file name. Stock Ubuntu kernels (X.Y.0-N-generic) are unaffected.
+CIRRUS_LINUX_SOURCE_DIR (default /usr/src) allows rootless build tests.
+
+Apply from the driver checkout root:  git apply ubuntu-base-source-fallback.patch
+
+diff --git a/install.cirrus.driver.sh b/install.cirrus.driver.sh
+index e255871..089dee7 100755
+--- a/install.cirrus.driver.sh
++++ b/install.cirrus.driver.sh
+@@ -166,9 +166,19 @@ if [ $isubuntu -ge 1 ]; then
+         #           modified with extensive backports from later kernel versions
+         #           (and in any case there is no linux-source-... package for hwe kernels)
+ 
+-	if [ ! -e /usr/src/linux-source-$kernel_version.tar.bz2 ]; then
++	# Ubuntu names its source package after the base release (eg linux-source-7.0.0)
++	# while custom kernels built from it report the upstream point release (eg 7.0.14-custom).
++	# Fall back to the X.Y.0 tarball; CIRRUS_LINUX_SOURCE_DIR overrides /usr/src for testing.
++	src_root=${CIRRUS_LINUX_SOURCE_DIR:-/usr/src}
++	src_name=linux-source-$kernel_version
++	if [ ! -e $src_root/$src_name.tar.bz2 ] && [ -e $src_root/linux-source-$major_version.$minor_version.0.tar.bz2 ]; then
++		src_name=linux-source-$major_version.$minor_version.0
++		echo "Using Ubuntu base source $src_root/$src_name.tar.bz2 for kernel $UNAME"
++	fi
++
++	if [ ! -e $src_root/$src_name.tar.bz2 ]; then
+ 
+-		echo "Ubuntu linux kernel source not found in /usr/src: /usr/src/linux-source-$kernel_version.tar.bz2"
++		echo "Ubuntu linux kernel source not found: $src_root/$src_name.tar.bz2"
+ 		echo "assuming the linux kernel source package is not installed"
+ 		echo "please install the linux kernel source package:"
+ 		echo "sudo apt install linux-source-$kernel_version"
+@@ -180,7 +190,7 @@ if [ $isubuntu -ge 1 ]; then
+ 
+ 	fi
+ 
+-	tar --strip-components=2 -xvf /usr/src/linux-source-$kernel_version.tar.bz2 --directory=build/ linux-source-$kernel_version/sound/hda
++	tar --strip-components=2 -xvf $src_root/$src_name.tar.bz2 --directory=build/ $src_name/sound/hda
+ 
+ else
+ 	# here we assume the distribution kernel source is essentially the mainline kernel source

@@ -15,6 +15,7 @@ This page supersedes historical “current status” paragraphs elsewhere in the
 | USB 2 hub | Genesys `05e3:0610` |
 | USB 3 hub | Genesys `05e3:0626` |
 | Ethernet | Realtek RTL8153 `0bda:8153`, existing `r8152` driver |
+| Audio codec | Cirrus Logic CS8409 `0x10138409`, subsystem `0x106b3600` |
 | Tested controller trees | Intel Alpine Ridge xHCI `8086:15d4`, `0000:06:00.0` and `0000:7c:00.0` |
 
 ## Installed behavior
@@ -27,6 +28,7 @@ This page supersedes historical “current status” paragraphs elsewhere in the
 - Root-owned source approval and per-kernel build records verify both T1 modules before firmware actions. Unknown builds, changed source/artifacts, or mismatching loaded modules block deep sleep.
 - The helper calls `/usr/local/libexec/mbp-t1/acpidbg` directly. Ownership, hash, native executable format and help/readiness are checked before a pending firmware marker is created.
 - The original Ethernet profile uses a tested distinct DHCP identity to avoid a verified duplicate lease/address. The exact identity is omitted from this public archive. Router-side cleanup is still separate.
+- Internal speakers use an Apple-patched `snd-hda-codec-cs8409` ([davidjo/snd_hda_macbookpro](https://github.com/davidjo/snd_hda_macbookpro) `89b22ff`). It is installed manually in `/lib/modules/7.0.14-mbp132-tb1/updates/cirrus/` and confirmed playing. DKMS `snd_hda_macbookpro/0.1` is still only `added`. Stock fallback kernels load the silent in-tree driver. See [AUDIO.md](AUDIO.md).
 - GRUB's default explicitly selects the patched kernel. The machine's actual GRUB disk UUID is replaced in the public example. Promotion was independently confirmed by reading the installed configuration; some historical snapshots still say “not promoted.”
 
 ## Validated
@@ -40,3 +42,5 @@ Open-lid suspend can wake prematurely. A 60-second RTC test measured only 3.196 
 The inactive xHCI controller logs `USBSTS 0x401, Reinit` on resume. This moved from `7c` to `06` when the adapter moved to the opposite side; the active controller retained Ethernet in both tests. This reset observation should not be confused with the original complete removal of both USB 3 controller trees.
 
 The patched kernel's battery efficiency has not been measured by a controlled long discharge trial. Earlier stock-kernel closed-lid overnight measurements belong to their original configuration and do not establish a new-kernel wattage. No hibernation solution is claimed.
+
+The speaker fix is tied to `7.0.14-mbp132-tb1` until the DKMS setup in [AUDIO.md](AUDIO.md) is completed. Headphones, microphones and speaker behavior after deep-sleep resume have not been checked with the patched audio driver.

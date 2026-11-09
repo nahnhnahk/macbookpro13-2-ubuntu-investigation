@@ -28,5 +28,10 @@ Dates identify the investigation events; the Git commits publishing this archive
 | Nov 8, opposite-controller trial | 104.941 seconds asleep with adapter on 7c:00.0 | Ethernet retained USB 3 and 1 Gbps link; both sides now exercised |
 | Nov 8, promotion | User completed the final promotion step | Installed GRUB configuration independently verified to select patched kernel; stock fallback retained |
 | Nov 8, publication | Sanitized docs, source snapshots, evidence and regression tests assembled | Actual public Git history begins with this archive; future changes should append dated evidence |
+| Nov 7–8, audio | Internal speakers silent since install; userspace sink at full volume | In-tree CS8409 driver uses generic fallback for Apple ID `0x106b3600`; speaker amplifiers never initialized |
+| Nov 8 00:24, audio | Community driver added to DKMS | Pre-build failed: `linux-source-7.0.0.tar.bz2` missing; state stayed `added`, unnoticed |
+| Nov 8, audio | Rebooted into patched kernel; still silent | Custom kernel's cs8409 module identical to stock (`srcversion`); script would also look for nonexistent `linux-source-7.0.14` |
+| Nov 8, audio | Built patched driver rootless from the archived `7.0.0-43.43` source; user installed it into `updates/` and rebooted | `patch_cs8409 NOT FOUND trying APPLE`; user confirmed the speakers play |
+| Nov 8, audio | Source-lookup fallback patch for the DKMS hook; tested rootless for both installed kernels | Both build; root DKMS install, stock-kernel playback, headphones/mic and post-resume behavior not yet validated |
 
 The initial investigation had deliberately narrower authorization for firmware experiments. Later explicit user authorization and validation superseded those restrictions in the recorded session. Historical warning paragraphs describe their original stage; they are not a substitute for the final configuration or permission to experiment on another machine.
