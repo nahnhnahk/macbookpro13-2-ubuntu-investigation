@@ -1,0 +1,2 @@
+# Managed MacBook test-kernel boot selection.
+GRUB_DEFAULT="gnulinux-advanced-00000000-0000-4000-8000-000000000004>gnulinux-7.0.14-mbp132-tb1-advanced-00000000-0000-4000-8000-000000000004"
