@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "path": "/usr/local/libexec/mbp-t1/acpidbg",
+  "sha256": "666769831bc5560c87c1262b85686c28d19fb0b4afdcbaa5a59b9dd39a45586d",
+  "source_package": "linux-source-7.0.0=7.0.0-43.43",
+  "source": "tools/power/acpi/tools/acpidbg/acpidbg.c",
+  "source_sha256": "ecbe59421191b5b83f79ebef20b794c3973e69e6c0bbf0738db5ad1956246cde",
+  "readiness_check": [
+    "-h"
+  ]
+}

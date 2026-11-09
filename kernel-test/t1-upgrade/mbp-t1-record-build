@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+"""Record an installed, verified DKMS rebuild; never invoke firmware."""
+import os
+import fcntl
+from pathlib import Path
+import sys
+import time
+
+sys.path.insert(0, '/usr/local/lib/mbp-t1')
+from mbp_t1_guard import approve_installed
+
+args = sys.argv[1:]
+defer = '--defer-without-headers' in args
+args = [arg for arg in args if arg != '--defer-without-headers']
+if os.geteuid() != 0 or len(args) != 1:
+    raise SystemExit('Run as root with a kernel release argument')
+if Path('/sys/class/dmi/id/product_name').read_text().strip() != 'MacBookPro13,2':
+    raise SystemExit('Unsupported machine')
+try:
+    from mbp_t1_guard import kernel_name
+    kernel = kernel_name(args[0])
+    if defer and not (Path('/lib/modules') / kernel / 'build/Makefile').exists():
+        print(f'mbp-t1: waiting for headers/DKMS before approving {kernel}')
+        raise SystemExit(0)
+    # Share the recovery helper's lock. Do not replace approvals or rebuild
+    # modules in the middle of a pending firmware sleep/wake pair.
+    limit = time.monotonic() + 120
+    with open('/run/lock/mbp-t1-firmware-test.lock', 'a') as lock:
+        while True:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            if not Path('/run/mbp-t1-s3-handshake/pending.json').exists():
+                break
+            fcntl.flock(lock, fcntl.LOCK_UN)
+            if time.monotonic() >= limit:
+                raise RuntimeError('T1 wake remains pending; no build/approval changes were made')
+            time.sleep(1)
+        approve_installed(kernel)
+except Exception as error:
+    raise SystemExit(f'mbp-t1: DKMS approval failed: {error}')
+print(f'mbp-t1: validated T1 DKMS artifacts for {kernel}')

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Runs after the distribution's DKMS kernel hook, before zz-update-grub.
+set -eu
+exec /usr/local/sbin/mbp-t1-record-build --defer-without-headers "$1"

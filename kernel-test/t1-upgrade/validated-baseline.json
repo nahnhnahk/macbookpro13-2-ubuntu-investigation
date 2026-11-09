@@ -1,0 +1,18 @@
+{
+  "kernel": "7.0.0-43-generic",
+  "approval_sha256": "9b68a0941b465c7b32869637cb118557aba099003450c3e83c63fcb18b54a0d7",
+  "modules": {
+    "apple_ibridge": {
+      "path": "/usr/lib/modules/7.0.0-43-generic/updates/dkms/apple-ibridge.ko.zst",
+      "sha256": "a73c64eec7860626eaa5384f56ed39e3e148f133b13ea29daa89ac903b87b3f0",
+      "srcversion": "5DE667D5C743E56B1955BA9",
+      "vermagic": "7.0.0-43-generic SMP preempt mod_unload modversions"
+    },
+    "apple_touchbar": {
+      "path": "/usr/lib/modules/7.0.0-43-generic/updates/dkms/apple-touchbar.ko.zst",
+      "sha256": "e4264a3b0ff2e755ecae5236bf7c3adf5fe511cec4fadf59034c1ffec389c73c",
+      "srcversion": "D521E1602E61EB9488ED344",
+      "vermagic": "7.0.0-43-generic SMP preempt mod_unload modversions"
+    }
+  }
+}

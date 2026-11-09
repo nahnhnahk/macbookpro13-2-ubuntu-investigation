@@ -1,0 +1,4 @@
+#!/bin/sh
+# A kernel's image can be configured before its headers. Check again after DKMS.
+set -eu
+exec /usr/local/sbin/mbp-t1-record-build "$1"
