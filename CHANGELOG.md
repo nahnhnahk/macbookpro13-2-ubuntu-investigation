@@ -1,5 +1,11 @@
 # Change log
 
+## Touch Bar Fn key fix — 2026-11-08
+
+- Found why holding Fn did not switch the Touch Bar to F-keys: keyd's exclusive grab of the Apple SPI Keyboard stops the kernel from delivering its events to the Touch Bar driver's input handler, and keyd does not re-emit `KEY_FN`. The same cause could let the bar time out while typing.
+- Added an `applespi` patch that reports Fn (plus a per-report activity pulse) on a separate "Apple SPI Fn Key" device, packaged as DKMS `applespi-fn` with a source-preparation script and install/uninstall helpers. The pinned T1 driver and deep-sleep guard are untouched.
+- Recorded the user-confirmed result on `7.0.14-mbp132-tb1` with sanitized before/after evidence. Reboot, resume, typing keep-alive and stock kernels remain unvalidated.
+
 ## Internal speaker fix — 2026-11-08
 
 - Found why the internal speakers were silent: the in-tree CS8409 driver has no Apple (`0x106b3600`) support, the community driver's DKMS build had failed for lack of `linux-source-7.0.0`, and the custom kernel's release name broke the source lookup.

@@ -1,0 +1,106 @@
+From: nahnhnahk <1370110+nahnhnahk@users.noreply.github.com>
+Subject: [PATCH] Input: applespi - report Fn on a separate input device
+
+Key remappers such as keyd take an exclusive grab (EVIOCGRAB) of the
+"Apple SPI Keyboard". While a device is grabbed, input_pass_values()
+delivers its events only to the grabbing handle, so in-kernel listeners
+such as the T1 Touch Bar driver (apple-touchbar, input handler "appletb")
+never see KEY_FN and the bar does not switch to the F-key row. Its
+idle-timeout also stops being refreshed by typing.
+
+Move KEY_FN to a second input device, "Apple SPI Fn Key" (BUS_SPI,
+product 0x0001), that the remapper can leave ungrabbed. The Touch Bar
+driver's existing id table (BUS_SPI + KEY_FN) attaches to it unchanged.
+Every keyboard report also emits MSC_SCAN on that device as an activity
+pulse, because a lone EV_SYN is dropped by the input core.
+
+Based on Ubuntu linux-source-7.0.0=7.0.0-43.43 (upstream 7.0.14).
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+diff --git a/drivers/input/keyboard/applespi.c b/drivers/input/keyboard/applespi.c
+index b5ff71c..2277a5d 100644
+--- a/drivers/input/keyboard/applespi.c
++++ b/drivers/input/keyboard/applespi.c
+@@ -372,6 +372,7 @@ struct applespi_data {
+ 	struct spi_settings		spi_settings;
+ 	struct input_dev		*keyboard_input_dev;
+ 	struct input_dev		*touchpad_input_dev;
++	struct input_dev		*fn_input_dev;
+ 
+ 	u8				*tx_buffer;
+ 	u8				*tx_status;
+@@ -1178,15 +1179,27 @@ applespi_handle_keyboard_event(struct applespi_data *applespi,
+ 					 applespi_controlcodes[i], 0);
+ 	}
+ 
+-	/* check function key */
+-	if (keyboard_protocol->fn_pressed && !applespi->last_fn_pressed)
+-		input_report_key(applespi->keyboard_input_dev, KEY_FN, 1);
+-	else if (!keyboard_protocol->fn_pressed && applespi->last_fn_pressed)
+-		input_report_key(applespi->keyboard_input_dev, KEY_FN, 0);
+-	applespi->last_fn_pressed = keyboard_protocol->fn_pressed;
+-
+-	/* done */
++	/* done with the main keyboard */
+ 	input_sync(applespi->keyboard_input_dev);
++
++	/*
++	 * Fn key is reported on its own input device. Key remappers such as
++	 * keyd take an exclusive grab (EVIOCGRAB) of the main keyboard, which
++	 * hides its events from every other in-kernel input handler - notably
++	 * the Touch Bar driver, which needs KEY_FN to switch to the F-key row
++	 * and any keyboard activity to stay awake. The remapper can leave this
++	 * device alone, so those handlers keep working.
++	 *
++	 * MSC_SCAN is sent with every keyboard report as an activity pulse:
++	 * a lone EV_SYN is dropped by the input core, MSC events are not.
++	 */
++	if (keyboard_protocol->fn_pressed != applespi->last_fn_pressed)
++		input_report_key(applespi->fn_input_dev, KEY_FN,
++				 keyboard_protocol->fn_pressed);
++	applespi->last_fn_pressed = keyboard_protocol->fn_pressed;
++	input_event(applespi->fn_input_dev, EV_MSC, MSC_SCAN,
++		    keyboard_protocol->keys_pressed[0]);
++	input_sync(applespi->fn_input_dev);
+ 	memcpy(&applespi->last_keys_pressed, keyboard_protocol->keys_pressed,
+ 	       sizeof(applespi->last_keys_pressed));
+ }
+@@ -1711,8 +1724,6 @@ static int applespi_probe(struct spi_device *spi)
+ 			input_set_capability(applespi->keyboard_input_dev,
+ 					     EV_KEY, applespi_fn_codes[i].to);
+ 
+-	input_set_capability(applespi->keyboard_input_dev, EV_KEY, KEY_FN);
+-
+ 	sts = input_register_device(applespi->keyboard_input_dev);
+ 	if (sts) {
+ 		dev_err(&applespi->spi->dev,
+@@ -1720,6 +1731,28 @@ static int applespi_probe(struct spi_device *spi)
+ 		return -ENODEV;
+ 	}
+ 
++	/* separate Fn key device, see applespi_handle_keyboard_event() */
++	applespi->fn_input_dev = devm_input_allocate_device(&spi->dev);
++
++	if (!applespi->fn_input_dev)
++		return -ENOMEM;
++
++	applespi->fn_input_dev->name = "Apple SPI Fn Key";
++	applespi->fn_input_dev->phys = "applespi/input2";
++	applespi->fn_input_dev->dev.parent = &spi->dev;
++	applespi->fn_input_dev->id.bustype = BUS_SPI;
++	applespi->fn_input_dev->id.product = 0x0001;
++
++	input_set_capability(applespi->fn_input_dev, EV_KEY, KEY_FN);
++	input_set_capability(applespi->fn_input_dev, EV_MSC, MSC_SCAN);
++
++	sts = input_register_device(applespi->fn_input_dev);
++	if (sts) {
++		dev_err(&applespi->spi->dev,
++			"Unable to register Fn key input device (%d)\n", sts);
++		return -ENODEV;
++	}
++
+ 	/*
+ 	 * The applespi device doesn't send interrupts normally (as is described
+ 	 * in its DSDT), but rather seems to use ACPI GPEs.

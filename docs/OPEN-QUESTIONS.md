@@ -7,5 +7,6 @@
 5. **DHCP source of truth.** The tested client identity avoids the observed duplicate address. Router-side reservation/static-address cleanup and precise identification of the claimant remain separate work.
 6. **Breadth of recovery coverage.** Three measured cycles on one MacBookPro13,2 validate these conditions, not every adapter, hub, external display or other MacBook model. Exact EDUP retail model remains unconfirmed.
 7. **Audio beyond the internal speakers.** Complete and verify the DKMS install, including on the stock kernel. Check the headphone jack and detection, internal/headset microphones and speaker behavior after deep-sleep resume with the patched CS8409 driver. Track upstream Apple CS8409 support.
+8. **Touch Bar Fn fix coverage.** Check the `applespi-fn` module after a reboot and after deep-sleep resume. Confirm that typing alone keeps the bar awake past `idle_timeout=300`, and decide whether to build it for the stock fallback kernels. A cleaner long-term option is an upstream mechanism that lets in-kernel listeners observe grabbed devices, or Fn support in keyd.
 
 Preserve failed trials and their limitations. In particular, the old verifier's `passed: true` report without duration evidence must never be counted as a successful long sleep.

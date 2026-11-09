@@ -33,5 +33,8 @@ Dates identify the investigation events; the Git commits publishing this archive
 | Nov 8, audio | Rebooted into patched kernel; still silent | Custom kernel's cs8409 module identical to stock (`srcversion`); script would also look for nonexistent `linux-source-7.0.14` |
 | Nov 8, audio | Built patched driver rootless from the archived `7.0.0-43.43` source; user installed it into `updates/` and rebooted | `patch_cs8409 NOT FOUND trying APPLE`; user confirmed the speakers play |
 | Nov 8, audio | Source-lookup fallback patch for the DKMS hook; tested rootless for both installed kernels | Both build; root DKMS install, stock-kernel playback, headphones/mic and post-resume behavior not yet validated |
+| Nov 8, Touch Bar Fn | Holding Fn did not switch the Touch Bar to F-keys; `tbkbd` attached and `fnmode=1` | keyd's exclusive grab of the Apple SPI Keyboard; `input_pass_values()` delivers grabbed events only to the grabber, and keyd does not emit `KEY_FN` |
+| Nov 8, Touch Bar Fn | Chose an `applespi`-only fix over patching `apple-touchbar` | Changing the pinned T1 source would block deep sleep until re-approval |
+| Nov 8 20:58, Touch Bar Fn | DKMS `applespi-fn/0.1` installed, module reloaded, keyd restarted with `-0000:0001` | `tbkbd` now on "Apple SPI Fn Key"; user confirmed Fn switches the bar; reboot/resume/keep-alive/stock kernels not yet checked |
 
 The initial investigation had deliberately narrower authorization for firmware experiments. Later explicit user authorization and validation superseded those restrictions in the recorded session. Historical warning paragraphs describe their original stage; they are not a substitute for the final configuration or permission to experiment on another machine.

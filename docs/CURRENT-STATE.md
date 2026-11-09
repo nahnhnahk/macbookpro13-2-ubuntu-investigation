@@ -29,6 +29,7 @@ This page supersedes historical “current status” paragraphs elsewhere in the
 - The helper calls `/usr/local/libexec/mbp-t1/acpidbg` directly. Ownership, hash, native executable format and help/readiness are checked before a pending firmware marker is created.
 - The original Ethernet profile uses a tested distinct DHCP identity to avoid a verified duplicate lease/address. The exact identity is omitted from this public archive. Router-side cleanup is still separate.
 - Internal speakers use an Apple-patched `snd-hda-codec-cs8409` ([davidjo/snd_hda_macbookpro](https://github.com/davidjo/snd_hda_macbookpro) `89b22ff`). It is installed manually in `/lib/modules/7.0.14-mbp132-tb1/updates/cirrus/` and confirmed playing. DKMS `snd_hda_macbookpro/0.1` is still only `added`. Stock fallback kernels load the silent in-tree driver. See [AUDIO.md](AUDIO.md).
+- The Touch Bar Fn key works with keyd running. A patched `applespi` (DKMS `applespi-fn/0.1`, installed for `7.0.14-mbp132-tb1` only) reports Fn on a separate "Apple SPI Fn Key" device that keyd does not grab. keyd's `[ids]` excludes `0000:0001`. The pinned T1 driver sources are unchanged. See [TOUCHBAR-FN.md](TOUCHBAR-FN.md).
 - GRUB's default explicitly selects the patched kernel. The machine's actual GRUB disk UUID is replaced in the public example. Promotion was independently confirmed by reading the installed configuration; some historical snapshots still say “not promoted.”
 
 ## Validated
@@ -44,3 +45,5 @@ The inactive xHCI controller logs `USBSTS 0x401, Reinit` on resume. This moved f
 The patched kernel's battery efficiency has not been measured by a controlled long discharge trial. Earlier stock-kernel closed-lid overnight measurements belong to their original configuration and do not establish a new-kernel wattage. No hibernation solution is claimed.
 
 The speaker fix is tied to `7.0.14-mbp132-tb1` until the DKMS setup in [AUDIO.md](AUDIO.md) is completed. Headphones, microphones and speaker behavior after deep-sleep resume have not been checked with the patched audio driver.
+
+The Fn key fix was confirmed after a live module reload only. Reboot, deep-sleep resume, the typing keep-alive and the stock fallback kernels are unchecked; the stock kernels still use the in-tree `applespi`.
