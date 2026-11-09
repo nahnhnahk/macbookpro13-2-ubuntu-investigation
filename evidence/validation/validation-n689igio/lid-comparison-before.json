@@ -1,0 +1,15 @@
+{
+  "time": "2026-11-08T17:18:17.490480-08:00",
+  "boot_id": "00000000-0000-4000-8000-000000000003",
+  "clocks": {
+    "monotonic": 1615.479854251,
+    "boottime": 11638.289861718
+  },
+  "suspend_stats": {
+    "success": 7,
+    "fail": 0
+  },
+  "lid_state": "state:      open",
+  "purpose": "Read-only baseline for an opposite-side adapter normal closed-lid trial of at least90 seconds. No suspend, alarm or setting changes. Require same boot and exactly one successful cycle.",
+  "publication_note": "Only timing/counter fields retained; raw host diagnostics omitted."
+}

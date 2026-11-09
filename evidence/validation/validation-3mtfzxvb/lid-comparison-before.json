@@ -1,0 +1,15 @@
+{
+  "time": "2026-11-08T14:26:40.633627-08:00",
+  "boot_id": "00000000-0000-4000-8000-000000000003",
+  "clocks": {
+    "monotonic": 1227.486966227,
+    "boottime": 1341.433070219
+  },
+  "suspend_stats": {
+    "success": 6,
+    "fail": 0
+  },
+  "lid_state": "state:      open",
+  "purpose": "Read-only baseline for the next normal closed-lid comparison, preferably at least 15 minutes. No automatic suspend, alarm or settings changes. Require same boot ID and exactly one successful cycle before interpreting clock differences.",
+  "publication_note": "Only timing/counter fields retained; raw host diagnostics omitted."
+}

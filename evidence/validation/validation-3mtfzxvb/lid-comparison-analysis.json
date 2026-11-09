@@ -1,0 +1,29 @@
+{
+  "same_boot": true,
+  "successful_cycles": 1,
+  "failed_cycles": 0,
+  "timing": {
+    "schema": 1,
+    "requested_alarm_seconds": 930,
+    "total_elapsed_seconds": 10169.642,
+    "awake_seconds": 260.778,
+    "system_suspended_seconds": 9908.864,
+    "minimum_suspended_seconds": 915,
+    "duration_met": true
+  },
+  "lid_closed": "2026-11-08T14:27:46-08:00",
+  "suspend_entry": "2026-11-08T14:27:47-08:00",
+  "lid_opened_and_suspend_exit": "2026-11-08T17:12:57-08:00",
+  "t1_wake_acknowledged": "2026-11-08T17:13:13-08:00",
+  "intermediate_resume": false,
+  "post_resume_verifier_passed": true,
+  "user_report": "Things still working after a few hours closed.",
+  "ethernet_link_mbps": 1000,
+  "usb_transport_mbps": 5000,
+  "https_passed": true,
+  "remaining_limitations": [
+    "Other USB-C controller side has not been tested with the adapter.",
+    "Open-lid suspend still wakes early; lid-opening wake remains enabled.",
+    "Unused xHCI7c controller reinitializes on resume but its PCI config remains accessible."
+  ]
+}

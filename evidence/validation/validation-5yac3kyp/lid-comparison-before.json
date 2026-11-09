@@ -1,0 +1,15 @@
+{
+  "time": "2026-11-08T14:21:39.056230-08:00",
+  "boot_id": "00000000-0000-4000-8000-000000000003",
+  "clocks": {
+    "monotonic": 1025.170518329,
+    "boottime": 1039.855669006
+  },
+  "suspend_stats": {
+    "success": 5,
+    "fail": 0
+  },
+  "lid_state": "state:      open",
+  "purpose": "Read-only baseline for a subsequent ordinary 90-second closed-lid comparison. BOOTTIME minus MONOTONIC excludes all intervening awake time. Require one success-counter increment and same boot ID when analyzing.",
+  "publication_note": "Only timing/counter fields retained; raw host diagnostics omitted."
+}

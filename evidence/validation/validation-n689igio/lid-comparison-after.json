@@ -1,0 +1,13 @@
+{
+  "time": "2026-11-08T17:22:25.834916-08:00",
+  "boot_id": "00000000-0000-4000-8000-000000000003",
+  "clocks": {
+    "monotonic": 1758.882807485,
+    "boottime": 11886.634273723
+  },
+  "suspend_stats": {
+    "success": 8,
+    "fail": 0
+  },
+  "publication_note": "Only timing/counter fields retained; raw host diagnostics omitted."
+}

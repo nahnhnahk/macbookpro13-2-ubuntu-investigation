@@ -1,0 +1,45 @@
+{
+  "suspend_requested": null,
+  "boot_id": "00000000-0000-4000-8000-000000000003",
+  "before": {
+    "time": "2026-11-08T17:21:16.411562-08:00",
+    "kernel": "7.0.14-mbp132-tb1",
+    "errors": [],
+    "pci": {
+      "0000:06:00.0": {
+        "present": true,
+        "vendor": "0x8086",
+        "device": "0x15d4",
+        "power_state": "D3hot",
+        "power/control": "auto",
+        "power/runtime_status": "suspended",
+        "config_id": "8680d415"
+      },
+      "0000:7c:00.0": {
+        "present": true,
+        "vendor": "0x8086",
+        "device": "0x15d4",
+        "power_state": "D0",
+        "power/control": "auto",
+        "power/runtime_status": "active",
+        "config_id": "8680d415"
+      }
+    },
+    "t1_guard": "passed",
+    "planned_sleep_mode": "deep",
+    "ethernet_carrier": "1",
+    "ethernet_speed_mbps": "1000",
+    "usb_speed_mbps": "5000",
+    "route": {
+      "returncode": 0,
+      "stdout": "1.1.1.1 via 192.0.2.1 dev enx020000000001 src 192.0.2.25 uid 0 \n    cache \n",
+      "stderr": ""
+    },
+    "https": {
+      "returncode": 0,
+      "stdout": "HTTP/2 200 \ndate: Mon, 09 Nov 2026 01:21:16 GMT\ncontent-type: text/html; charset=utf-8\nserver: cloudflare\nlast-modified: Thu, 05 Nov 2026 21:17:41 GMT\nallow: GET, HEAD\naccept-ranges: bytes\nage: 4832\ncf-cache-status: HIT\ncf-ray: a578ffef59b0e2c1-SEA\nalt-svc: h3=\":443\"; ma=86400\n\n",
+      "stderr": ""
+    }
+  },
+  "passed": true
+}

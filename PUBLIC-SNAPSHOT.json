@@ -1,0 +1,428 @@
+{
+  "snapshot_date": "2026-11-08",
+  "kind": "sanitized source and evidence archive; not installable artifacts",
+  "source_file_provenance": [
+    {
+      "source_relative_path": "SUSPEND-FINDINGS.md",
+      "public_path": "history/SUSPEND-FINDINGS.md",
+      "original_sha256": "8f6a3d9abb46e5f77a54bebdc41fc46b3a476fc11b48e79ad2c919118b4d1eed",
+      "public_sha256": "5897706f9a69ddd001c3d7c7eba23f9b89220f2e08fba3ea78a7db4c42ae7fb6"
+    },
+    {
+      "source_relative_path": "USB-ETHERNET-FINDINGS.md",
+      "public_path": "history/USB-ETHERNET-FINDINGS.md",
+      "original_sha256": "d53c683878d1fbdbdee6609e4a756f0bb3e765021330837569c90f8fcec5acdb",
+      "public_sha256": "c8448f98307d23813800786a41c141916154ad4dd47de7b7289f5fa82b0530ac"
+    },
+    {
+      "source_relative_path": "acpi-analysis/FIRMWARE-FINDINGS.md",
+      "public_path": "history/FIRMWARE-FINDINGS.md",
+      "original_sha256": "9578ca561f5503a75d94914898e4dfa8a48160c8696ad077f005283ba9f5e535",
+      "public_sha256": "b4cea04a35c36b3584f235214310fe93546e24353c9773da0b66d1ce2fab4599"
+    },
+    {
+      "source_relative_path": "kernel-test/BUILD-STATUS.md",
+      "public_path": "history/BUILD-STATUS.md",
+      "original_sha256": "6bca7f86cbb5ce2da06f76346efe9346536cc07cdd4db20efd6f3243e0fdd832",
+      "public_sha256": "a2fa402a9a77f8a330e1a35d92b0fb0e9e879835d09541827778692e67d9cfbf"
+    },
+    {
+      "source_relative_path": "kernel-test/README.md",
+      "public_path": "history/KERNEL-TEST-README.md",
+      "original_sha256": "65dcd28efcf3a7f1d5a871ec00ebb5406e149c3f7f3d3615fb49b2692ac5c73f",
+      "public_sha256": "553cf788466ff3ac4a2321fbb08cf180f596356952c86731a4568fd37a558478"
+    },
+    {
+      "source_relative_path": "kernel-test/finalize-artifacts.py",
+      "public_path": "kernel-test/finalize-artifacts.py",
+      "original_sha256": "21f1f0a53d8e61c13542ce9e4899544a54fb557bffd4d530ef395fbecdd79e17",
+      "public_sha256": "21f1f0a53d8e61c13542ce9e4899544a54fb557bffd4d530ef395fbecdd79e17"
+    },
+    {
+      "source_relative_path": "kernel-test/finish-build.py",
+      "public_path": "kernel-test/finish-build.py",
+      "original_sha256": "5fb0a57fac425b6bc27fae2be1f05992e5a7cfb842f4c2429831c8ff24e58b74",
+      "public_sha256": "5fb0a57fac425b6bc27fae2be1f05992e5a7cfb842f4c2429831c8ff24e58b74"
+    },
+    {
+      "source_relative_path": "kernel-test/install-test-kernel.py",
+      "public_path": "kernel-test/install-test-kernel.py",
+      "original_sha256": "9d029051f1f373ffb4909a4689d45e3c9304ff2ed0740b1d4432fddee44d4952",
+      "public_sha256": "9d029051f1f373ffb4909a4689d45e3c9304ff2ed0740b1d4432fddee44d4952"
+    },
+    {
+      "source_relative_path": "kernel-test/package_permissions.py",
+      "public_path": "kernel-test/package_permissions.py",
+      "original_sha256": "39ff5816751608e70f4244b08a9eba5cdfadce9012cb2d4a78ed2b49b1d98962",
+      "public_sha256": "39ff5816751608e70f4244b08a9eba5cdfadce9012cb2d4a78ed2b49b1d98962"
+    },
+    {
+      "source_relative_path": "kernel-test/prepare-backport.py",
+      "public_path": "kernel-test/prepare-backport.py",
+      "original_sha256": "bce68bdc24c97a7dfffe7df6909dea5931602781cb2dea594f83a96ae6dc5f4b",
+      "public_sha256": "bce68bdc24c97a7dfffe7df6909dea5931602781cb2dea594f83a96ae6dc5f4b"
+    },
+    {
+      "source_relative_path": "kernel-test/promote-test-kernel.py",
+      "public_path": "kernel-test/promote-test-kernel.py",
+      "original_sha256": "ad8633329a61afd059ee4215a14596b0b78af7df5e21381ccb7b6c652aa99ceb",
+      "public_sha256": "d531e9e95f7a59896ea281cdf66b76069756577b108c70d77ab4732ab6b0b073"
+    },
+    {
+      "source_relative_path": "kernel-test/repair-acpidbg.py",
+      "public_path": "kernel-test/repair-acpidbg.py",
+      "original_sha256": "e42ab235641c129b0c453d6234e9716879c29f177531d093c26dba4366f6b1cb",
+      "public_sha256": "e42ab235641c129b0c453d6234e9716879c29f177531d093c26dba4366f6b1cb"
+    },
+    {
+      "source_relative_path": "kernel-test/rollback-test-kernel.py",
+      "public_path": "kernel-test/rollback-test-kernel.py",
+      "original_sha256": "ecfbc49360ef51554da674657e3f227a627ff6335e5ae65751cafd42c538c826",
+      "public_sha256": "ecfbc49360ef51554da674657e3f227a627ff6335e5ae65751cafd42c538c826"
+    },
+    {
+      "source_relative_path": "kernel-test/stage-packages.py",
+      "public_path": "kernel-test/stage-packages.py",
+      "original_sha256": "e345f76be19c51cfbd39b7201341b44324d196758b21df7f7a89808275a191a0",
+      "public_sha256": "e345f76be19c51cfbd39b7201341b44324d196758b21df7f7a89808275a191a0"
+    },
+    {
+      "source_relative_path": "kernel-test/test_grub_selection.py",
+      "public_path": "kernel-test/test_grub_selection.py",
+      "original_sha256": "009e506093d16d5a97f9861f47b006fbb28d86a0c6ba018978cb1fdd8ae2d31b",
+      "public_sha256": "009e506093d16d5a97f9861f47b006fbb28d86a0c6ba018978cb1fdd8ae2d31b"
+    },
+    {
+      "source_relative_path": "kernel-test/test_package_permissions.py",
+      "public_path": "kernel-test/test_package_permissions.py",
+      "original_sha256": "350390af7844e1d32599eaf8415b76759307e7b60d4b87dea57c9872988c744c",
+      "public_sha256": "350390af7844e1d32599eaf8415b76759307e7b60d4b87dea57c9872988c744c"
+    },
+    {
+      "source_relative_path": "kernel-test/test_sleep_duration.py",
+      "public_path": "kernel-test/test_sleep_duration.py",
+      "original_sha256": "3a14a08318b4aebd00f7593b69e682540d6e97ffed4e68500d3a4722a8c0aa90",
+      "public_sha256": "3a14a08318b4aebd00f7593b69e682540d6e97ffed4e68500d3a4722a8c0aa90"
+    },
+    {
+      "source_relative_path": "kernel-test/test_suspend_wait.py",
+      "public_path": "kernel-test/test_suspend_wait.py",
+      "original_sha256": "77a4902a38461dc0755af0fd259e4e371953304c1501be6e4035c13c8ee3953d",
+      "public_sha256": "77a4902a38461dc0755af0fd259e4e371953304c1501be6e4035c13c8ee3953d"
+    },
+    {
+      "source_relative_path": "kernel-test/verify-test-kernel.py",
+      "public_path": "kernel-test/verify-test-kernel.py",
+      "original_sha256": "bcefdd7fb6176f461a549ad250fbf902a4dba8c5370ecb3ea6175a0bdb131717",
+      "public_sha256": "786b08997a33f7c32d5fb3b4d570f3fb5a947703d430d895e56c00e02018599a"
+    },
+    {
+      "source_relative_path": "kernel-test/with-build-tools.sh",
+      "public_path": "kernel-test/with-build-tools.sh",
+      "original_sha256": "43632a753aff86730fcd343592ba7fcb6195970794bee3c1c7f6c19e58ffda08",
+      "public_sha256": "c7e300f00ceee118a867ebefd7246f8191e758c42f21ee3faafe5c3646acbe7b"
+    },
+    {
+      "source_relative_path": "kernel-test/source-changes.json",
+      "public_path": "kernel-test/source-changes.json",
+      "original_sha256": "6f9380a5ac37eb035295e698a9f14c36954cd6037d0e3e55e474691593333f4e",
+      "public_sha256": "6f9380a5ac37eb035295e698a9f14c36954cd6037d0e3e55e474691593333f4e"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/acpidbg.json",
+      "public_path": "kernel-test/t1-upgrade/acpidbg.json",
+      "original_sha256": "2958a84edb6a44755ceb288aa28fbc666359e93be3cd39e8bc47b885f413e1e7",
+      "public_sha256": "2958a84edb6a44755ceb288aa28fbc666359e93be3cd39e8bc47b885f413e1e7"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/approved-source.json",
+      "public_path": "kernel-test/t1-upgrade/approved-source.json",
+      "original_sha256": "9b68a0941b465c7b32869637cb118557aba099003450c3e83c63fcb18b54a0d7",
+      "public_sha256": "9b68a0941b465c7b32869637cb118557aba099003450c3e83c63fcb18b54a0d7"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/header-zz-mbp-t1-verify",
+      "public_path": "kernel-test/t1-upgrade/header-zz-mbp-t1-verify",
+      "original_sha256": "541541eb4883121227355c4964a12dfd9ce9953cfef8f6892c6f310db8fa690d",
+      "public_sha256": "541541eb4883121227355c4964a12dfd9ce9953cfef8f6892c6f310db8fa690d"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/mbp-t1-record-build",
+      "public_path": "kernel-test/t1-upgrade/mbp-t1-record-build",
+      "original_sha256": "fb65a07165772fd81d9fc7cd1276e73c2ac31a12dd630082ad9648d2254d065e",
+      "public_sha256": "fb65a07165772fd81d9fc7cd1276e73c2ac31a12dd630082ad9648d2254d065e"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/mbp-t1-s3-handshake.py",
+      "public_path": "kernel-test/t1-upgrade/mbp-t1-s3-handshake.py",
+      "original_sha256": "7fbbc3212805e375f4d5b8e64986ef47e710a9273789e97d7bd7257463f6e421",
+      "public_sha256": "7fbbc3212805e375f4d5b8e64986ef47e710a9273789e97d7bd7257463f6e421"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/mbp_t1_guard.py",
+      "public_path": "kernel-test/t1-upgrade/mbp_t1_guard.py",
+      "original_sha256": "ee997bfdfd23d7d68b3fb560dcaeed6fe68db6f7f568460eceb07ea1f5a27646",
+      "public_sha256": "ee997bfdfd23d7d68b3fb560dcaeed6fe68db6f7f568460eceb07ea1f5a27646"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/test_build_guard.py",
+      "public_path": "kernel-test/t1-upgrade/test_build_guard.py",
+      "original_sha256": "deb0eb3a0a6473e55ff8a248f2b169d0c770f8ffa94612cca53b73e51052d13e",
+      "public_sha256": "deb0eb3a0a6473e55ff8a248f2b169d0c770f8ffa94612cca53b73e51052d13e"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/test_handshake.py",
+      "public_path": "kernel-test/t1-upgrade/test_handshake.py",
+      "original_sha256": "584eed20183e62b9a623bef0ea5838c57aff4d77675d6f13dabe7e5a42075af7",
+      "public_sha256": "584eed20183e62b9a623bef0ea5838c57aff4d77675d6f13dabe7e5a42075af7"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/validated-baseline.json",
+      "public_path": "kernel-test/t1-upgrade/validated-baseline.json",
+      "original_sha256": "c6d3e4483c72be5c516079a1b1ba26181ace68ff458aa3d000bb997897407959",
+      "public_sha256": "c6d3e4483c72be5c516079a1b1ba26181ace68ff458aa3d000bb997897407959"
+    },
+    {
+      "source_relative_path": "kernel-test/t1-upgrade/zz-mbp-t1-verify",
+      "public_path": "kernel-test/t1-upgrade/zz-mbp-t1-verify",
+      "original_sha256": "acd5b2e3d09b220272ce6f69f441f82a002abe03e4045c589868a66b4b766c3a",
+      "public_sha256": "acd5b2e3d09b220272ce6f69f441f82a002abe03e4045c589868a66b4b766c3a"
+    },
+    {
+      "source_relative_path": "kernel-test/apple-ib-driver/Makefile",
+      "public_path": "kernel-test/apple-ib-driver/Makefile",
+      "original_sha256": "0b83960367a409292ce1b12c2d3cb62aa3a1bf9b5a911a999b9de1a222f33982",
+      "public_sha256": "0b83960367a409292ce1b12c2d3cb62aa3a1bf9b5a911a999b9de1a222f33982"
+    },
+    {
+      "source_relative_path": "kernel-test/apple-ib-driver/apple-ibridge.c",
+      "public_path": "kernel-test/apple-ib-driver/apple-ibridge.c",
+      "original_sha256": "96fc45f6ab17a01a1472e180ad7ff36648188db7a65dfc6712cf24eb7b09952d",
+      "public_sha256": "96fc45f6ab17a01a1472e180ad7ff36648188db7a65dfc6712cf24eb7b09952d"
+    },
+    {
+      "source_relative_path": "kernel-test/apple-ib-driver/apple-ibridge.h",
+      "public_path": "kernel-test/apple-ib-driver/apple-ibridge.h",
+      "original_sha256": "34d7c6c294a657b3675502e9e082cb5499ef0204c4a0206360be7498a3754754",
+      "public_sha256": "34d7c6c294a657b3675502e9e082cb5499ef0204c4a0206360be7498a3754754"
+    },
+    {
+      "source_relative_path": "kernel-test/apple-ib-driver/apple-touchbar.c",
+      "public_path": "kernel-test/apple-ib-driver/apple-touchbar.c",
+      "original_sha256": "2f3a3732e78420a246a1371c6024abf1775755866f81b61b80c700ee570a7975",
+      "public_sha256": "2f3a3732e78420a246a1371c6024abf1775755866f81b61b80c700ee570a7975"
+    },
+    {
+      "source_relative_path": "kernel-test/apple-ib-driver/dkms.conf",
+      "public_path": "kernel-test/apple-ib-driver/dkms.conf",
+      "original_sha256": "61938a1fb6e62152cc34348fb3d873ec956a50e5e4eafbbebf71d45e8acf677a",
+      "public_sha256": "61938a1fb6e62152cc34348fb3d873ec956a50e5e4eafbbebf71d45e8acf677a"
+    },
+    {
+      "source_relative_path": "kernel-test/apple-ib-driver/hid-ids.h",
+      "public_path": "kernel-test/apple-ib-driver/hid-ids.h",
+      "original_sha256": "70b551b047fc5c4e8c029764b64ef0a6167aa93b55913459f8df487ec1be2974",
+      "public_sha256": "70b551b047fc5c4e8c029764b64ef0a6167aa93b55913459f8df487ec1be2974"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/acpica-1235.patch",
+      "public_path": "kernel-test/patches/acpica-1235.patch",
+      "original_sha256": "6b68af786754f58606cc813f2280b7eca283c4dde63b903b3cf632c9ae13cf2d",
+      "public_sha256": "6b68af786754f58606cc813f2280b7eca283c4dde63b903b3cf632c9ae13cf2d"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/acpica-1236.patch",
+      "public_path": "kernel-test/patches/acpica-1236.patch",
+      "original_sha256": "5fada3d2919cdc9e2deb8f8506b3caf8e0cb8b60ff8b65d14087ac3158795707",
+      "public_sha256": "5fada3d2919cdc9e2deb8f8506b3caf8e0cb8b60ff8b65d14087ac3158795707"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/pci-config-accessible.patch",
+      "public_path": "kernel-test/patches/pci-config-accessible.patch",
+      "original_sha256": "18d679ef10a1ec81487bf417ce373e0c2f0742732b32285a516187afb53c2401",
+      "public_sha256": "18d679ef10a1ec81487bf417ce373e0c2f0742732b32285a516187afb53c2401"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/pci-link-status.patch",
+      "public_path": "kernel-test/patches/pci-link-status.patch",
+      "original_sha256": "716d375457dfa333115743ae75c1d670b1b7ed0921aed88a268ea26b52d0f66f",
+      "public_sha256": "716d375457dfa333115743ae75c1d670b1b7ed0921aed88a268ea26b52d0f66f"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/pci-save-state.patch",
+      "public_path": "kernel-test/patches/pci-save-state.patch",
+      "original_sha256": "d189fb2a4f19357b4b5bdcce6a46cc1b117b74223db0d27e755ceb252435d88a",
+      "public_sha256": "a4aa942cd8e3d428da95ffa6bf113f83e9cc54ac6a7b6202410102b2709f7405"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/thunderbolt-v3.patch",
+      "public_path": "kernel-test/patches/thunderbolt-v3.patch",
+      "original_sha256": "ad7e9749a0234e6f4e6e1aefde669a7a35d9651a34d99989ae8a4a9b4a64c2a8",
+      "public_sha256": "ad7e9749a0234e6f4e6e1aefde669a7a35d9651a34d99989ae8a4a9b4a64c2a8"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/thunderbolt-v4.patch",
+      "public_path": "kernel-test/patches/thunderbolt-v4.patch",
+      "original_sha256": "f4711a78c19309db4fc61f043006a3083dd6347691a36db2fb8508056d947ea8",
+      "public_sha256": "f4711a78c19309db4fc61f043006a3083dd6347691a36db2fb8508056d947ea8"
+    },
+    {
+      "source_relative_path": "kernel-test/patches/ubuntu-7.0.0-43-mbp132-backport.patch",
+      "public_path": "kernel-test/patches/ubuntu-7.0.0-43-mbp132-backport.patch",
+      "original_sha256": "de9f6dd12f3e1e730b9050f3469170981e03edbd26f933b447bd40806c47a637",
+      "public_sha256": "de9f6dd12f3e1e730b9050f3469170981e03edbd26f933b447bd40806c47a637"
+    },
+    {
+      "source_relative_path": "touchbar-lifecycle-fix/lifecycle.patch",
+      "public_path": "patches/touchbar-lifecycle.patch",
+      "original_sha256": "deb8682d1994acfc9e406a9eaa41e4b09942f6c7bb18145f19f45f005cab107c",
+      "public_sha256": "deb8682d1994acfc9e406a9eaa41e4b09942f6c7bb18145f19f45f005cab107c"
+    },
+    {
+      "source_relative_path": "ethernet-investigation/test-usb-hub.py",
+      "public_path": "diagnostics/test-usb-hub.py",
+      "original_sha256": "75ba15cfded066e54b67a941e7084dab3d3872803ae32b84917d832a13d1320b",
+      "public_sha256": "75ba15cfded066e54b67a941e7084dab3d3872803ae32b84917d832a13d1320b"
+    },
+    {
+      "source_relative_path": "kernel-test/logs/config-diff.txt",
+      "public_path": "evidence/build/config-diff.txt",
+      "original_sha256": "c4adb56c34dfcee127acd8d03ab3c6ae170d3973fecfa7dc33a9f493945db1ee",
+      "public_sha256": "c4adb56c34dfcee127acd8d03ab3c6ae170d3973fecfa7dc33a9f493945db1ee"
+    },
+    {
+      "source_relative_path": "kernel-test/logs/checkpatch.txt",
+      "public_path": "evidence/build/checkpatch.txt",
+      "original_sha256": "dbaf8e19a2d1fa62a42a595ce42e397aa6349c5171ae3c1f0e3ed7b6bd54f0c4",
+      "public_sha256": "dbaf8e19a2d1fa62a42a595ce42e397aa6349c5171ae3c1f0e3ed7b6bd54f0c4"
+    },
+    {
+      "source_relative_path": "kernel-test/logs/nhi-ops-audit.txt",
+      "public_path": "evidence/build/nhi-ops-audit.txt",
+      "original_sha256": "71207f9c08943291ebad2e64b432bf53780f67c6876a74ac3c465c4b9e554ba8",
+      "public_sha256": "71207f9c08943291ebad2e64b432bf53780f67c6876a74ac3c465c4b9e554ba8"
+    },
+    {
+      "source_relative_path": "kernel-test/artifact-manifest.json",
+      "public_path": "evidence/build/original-artifact-manifest.json",
+      "original_sha256": "4ad50e13dafb6d176bc134b42d6969545a04a189f79020e29f473310dd5a8614",
+      "public_sha256": "4ad50e13dafb6d176bc134b42d6969545a04a189f79020e29f473310dd5a8614"
+    },
+    {
+      "source_relative_path": "kernel-test/test-driver-build.json",
+      "public_path": "evidence/build/test-driver-build.json",
+      "original_sha256": "58cc170aad91ba670d45f697478e3c08f868176418b568889ef04d9710c46efd",
+      "public_sha256": "58cc170aad91ba670d45f697478e3c08f868176418b568889ef04d9710c46efd"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-6lgmwrhh/result.json",
+      "public_path": "evidence/validation/validation-6lgmwrhh/result.json",
+      "original_sha256": "bf24a9fd2038b198c5b6dab9e9e36a0bc662661957ac3f0bcc3088be19115928",
+      "public_sha256": "bab2d14149d36152d911ebb3389b4811733ef37137c0622c084a82b664c55f5c"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-6lgmwrhh/suspend-unit.log",
+      "public_path": "evidence/validation/validation-6lgmwrhh/suspend-unit.log",
+      "original_sha256": "783b9bd0345ffa89f776a82f0fc8e3def4df845a6b7d2af0a803a7dba8892763",
+      "public_sha256": "b690f4604c16b0705e789e411b606fbc06a4a3e8e530ed243b6ad07a07009180"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-jpzj_1kb/result.json",
+      "public_path": "evidence/validation/validation-jpzj_1kb/result.json",
+      "original_sha256": "9062427bb6c94149e5a0fb1d027e2747f22e4e9cb741ddf99bbf7c56fbd46c15",
+      "public_sha256": "df7aa634d8ea9a864e79f8a279866d5af264be50be9a40f7b0e06b9a0c0507cb"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-jpzj_1kb/suspend-unit.log",
+      "public_path": "evidence/validation/validation-jpzj_1kb/suspend-unit.log",
+      "original_sha256": "9168be4c46ca56eb9333bfc2becbcf3898a35cbfe5877a3ae7b2a8bbb0ceeaa8",
+      "public_sha256": "1c2d0f0cc27bac10e9a96886f8ebbf3a3c90c553824d184b8c7ffb546cc17892"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-5yac3kyp/result.json",
+      "public_path": "evidence/validation/validation-5yac3kyp/result.json",
+      "original_sha256": "42b7086fc25ace721d85c7feb8aa558ac712f193a5dad3141e6665200bd29fcb",
+      "public_sha256": "9a29ff3e325f2c391613cb850ca474c3397998411b9393166439d8cb7c7bf3f3"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-5yac3kyp/manual-validation-summary.json",
+      "public_path": "evidence/validation/validation-5yac3kyp/manual-validation-summary.json",
+      "original_sha256": "3c32b0010d82f6fc7b972fb0714fdcf34519258fc1978f5110e5c8369f878831",
+      "public_sha256": "2d449eaa6c65d02acda62c4ce49401fc22476a167ca264c75ded46a443d7eec9"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-5yac3kyp/lid-comparison-analysis.json",
+      "public_path": "evidence/validation/validation-5yac3kyp/lid-comparison-analysis.json",
+      "original_sha256": "4d0f44a2a53f2aa596a8b3f07950e3809574210b4d96cb2d09984c91da3436bf",
+      "public_sha256": "4d0f44a2a53f2aa596a8b3f07950e3809574210b4d96cb2d09984c91da3436bf"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-5yac3kyp/closed-lid-services.log",
+      "public_path": "evidence/validation/validation-5yac3kyp/closed-lid-services.log",
+      "original_sha256": "fd7842673cca5452bcf772e8519003b92dea8c5177e4a1d790981ae6623b9502",
+      "public_sha256": "d2af4ae8c4553584e3cfb0da5875f996212438657085e07fb9446644fb29f80b"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-3mtfzxvb/result.json",
+      "public_path": "evidence/validation/validation-3mtfzxvb/result.json",
+      "original_sha256": "9f97ead5c697854672655d7285cad6dedb1dd04bc816a774c5a203ec9d44490f",
+      "public_sha256": "ff3556da97424e8d779ee015546692c6d58ea76f44d3cb8c53ea283f234c9d7f"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-3mtfzxvb/manual-validation-summary.json",
+      "public_path": "evidence/validation/validation-3mtfzxvb/manual-validation-summary.json",
+      "original_sha256": "c8654ae2004202383ca4000245fa3a7c2db66632db0673fbb6a40b89da77f5ee",
+      "public_sha256": "4b7e2d38f09273b546f75039e318778962af7882c3d1f870e5bca0cf85e44baf"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-3mtfzxvb/lid-comparison-analysis.json",
+      "public_path": "evidence/validation/validation-3mtfzxvb/lid-comparison-analysis.json",
+      "original_sha256": "b542a0e111deff803a12a45cbc4e5da67514c09a5e50bdce80ef03e75ae9546e",
+      "public_sha256": "b542a0e111deff803a12a45cbc4e5da67514c09a5e50bdce80ef03e75ae9546e"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-3mtfzxvb/closed-lid-services.log",
+      "public_path": "evidence/validation/validation-3mtfzxvb/closed-lid-services.log",
+      "original_sha256": "6bbc8dfdd8de98e818b9b4d93335dd586e058f251ca3efeff0f6c388e64428fe",
+      "public_sha256": "6adf945489b88d27dc4a8c61555313ef22248031214a07d00ec1564faf679e96"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-n689igio/result.json",
+      "public_path": "evidence/validation/validation-n689igio/result.json",
+      "original_sha256": "70a13db095af314b4383f9eab106111d5b6a9bb03383dfd0b88e0d5ed7903999",
+      "public_sha256": "6d08d92662d150b13c5ec83d4cbd068fc3eb44f093790d58b7922317cb09a9a4"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-n689igio/manual-validation-summary.json",
+      "public_path": "evidence/validation/validation-n689igio/manual-validation-summary.json",
+      "original_sha256": "383234a72f7730f1682bc68d2f13d2d049b2ae534db458cb7669597a63c1ca9a",
+      "public_sha256": "fa8da3927cdbb7eeb00810b4184bcbaea0da0505816e018578311784f3b50536"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-n689igio/lid-comparison-analysis.json",
+      "public_path": "evidence/validation/validation-n689igio/lid-comparison-analysis.json",
+      "original_sha256": "281001352cef5fc187b24780df2ab4be0744085ed1b3a3e3e1e5f292f5a4e239",
+      "public_sha256": "281001352cef5fc187b24780df2ab4be0744085ed1b3a3e3e1e5f292f5a4e239"
+    },
+    {
+      "source_relative_path": "kernel-test/validation-n689igio/closed-lid-services.log",
+      "public_path": "evidence/validation/validation-n689igio/closed-lid-services.log",
+      "original_sha256": "5e61e281779153642e593a24a6b7d8791e1bb8d878b79ff7931b2a442f1646c4",
+      "public_sha256": "5bc8bf0a6fbf06fca66a8f0393b711cfae9c60e43dd8ef1a22600b74e92e134a"
+    }
+  ],
+  "excluded": [
+    "credentials and private keys",
+    "kernel build trees and binaries",
+    "runtime acpidbg binary",
+    "complete machine/firmware dumps and journals",
+    "actual network identities and machine UUIDs"
+  ],
+  "source_transformations": [
+    "home path and interface placeholders",
+    "documentation IPs and synthetic MACs",
+    "synthetic UUIDs and boot IDs",
+    "kernel object addresses redacted",
+    "public patch email routing headers omitted"
+  ]
+}

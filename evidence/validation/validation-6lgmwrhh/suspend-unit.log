@@ -1,0 +1,18 @@
+Nov 08 14:13:47 example-MacBookPro13-2 systemd[1]: Starting systemd-suspend.service - System Suspend...
+Nov 08 14:13:47 example-MacBookPro13-2 mbp-t1-s3-handshake[12705]: mbp-t1: SOCW(0) once
+Nov 08 14:13:47 example-MacBookPro13-2 mbp-t1-s3-handshake[12705]: Evaluating \_SB.PCI0.XHC1.RHUB.ASOC.SOCW
+Nov 08 14:13:47 example-MacBookPro13-2 mbp-t1-s3-handshake[12705]: Evaluation of \_SB.PCI0.XHC1.RHUB.ASOC.SOCW returned object [ADDRESS_REDACTED], external buffer length 18
+Nov 08 14:13:47 example-MacBookPro13-2 mbp-t1-s3-handshake[12705]:  [Integer] = 0000000000000000
+Nov 08 14:13:47 example-MacBookPro13-2 mbp-t1-s3-handshake[12705]: mbp-t1: firmware sleep acknowledged
+Nov 08 14:13:48 example-MacBookPro13-2 systemd-sleep[12712]: Successfully froze unit 'user.slice'.
+Nov 08 14:13:48 example-MacBookPro13-2 systemd-sleep[12712]: Performing sleep operation 'suspend'...
+Nov 08 14:13:51 example-MacBookPro13-2 systemd-sleep[12712]: System returned from sleep operation 'suspend'.
+Nov 08 14:13:51 example-MacBookPro13-2 systemd-sleep[12712]: Successfully thawed unit 'user.slice'.
+Nov 08 14:13:52 example-MacBookPro13-2 mbp-t1-s3-handshake[12786]: mbp-t1: waiting 15 seconds before firmware wake, matching validated test
+Nov 08 14:14:07 example-MacBookPro13-2 mbp-t1-s3-handshake[12786]: mbp-t1: SOCW(1) once
+Nov 08 14:14:07 example-MacBookPro13-2 mbp-t1-s3-handshake[12786]: Evaluating \_SB.PCI0.XHC1.RHUB.ASOC.SOCW
+Nov 08 14:14:07 example-MacBookPro13-2 mbp-t1-s3-handshake[12786]: Evaluation of \_SB.PCI0.XHC1.RHUB.ASOC.SOCW returned object [ADDRESS_REDACTED], external buffer length 18
+Nov 08 14:14:07 example-MacBookPro13-2 mbp-t1-s3-handshake[12786]:  [Integer] = 0000000000000000
+Nov 08 14:14:07 example-MacBookPro13-2 mbp-t1-s3-handshake[12786]: mbp-t1: firmware wake acknowledged
+Nov 08 14:14:07 example-MacBookPro13-2 systemd[1]: systemd-suspend.service: Deactivated successfully.
+Nov 08 14:14:07 example-MacBookPro13-2 systemd[1]: Finished systemd-suspend.service - System Suspend.

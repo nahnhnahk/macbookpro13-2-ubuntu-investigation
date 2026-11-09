@@ -1,0 +1,12 @@
+{
+  "apple-ibridge": {
+    "srcversion": "5DE667D5C743E56B1955BA9",
+    "vermagic": "7.0.14-mbp132-tb1 SMP preempt mod_unload modversions",
+    "sha256": "7bc7016006816dc861c3c4b8b96929d6391c99df7ae7d3c929b2aff85b6cf82c"
+  },
+  "apple-touchbar": {
+    "srcversion": "D521E1602E61EB9488ED344",
+    "vermagic": "7.0.14-mbp132-tb1 SMP preempt mod_unload modversions",
+    "sha256": "e27845f6de17a2de20d600c3a20b9c588d5b69f974352d3f200dd044a02cd521"
+  }
+}

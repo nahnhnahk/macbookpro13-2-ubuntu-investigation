@@ -1,0 +1,3 @@
+total: 0 errors, 0 warnings, 334 lines checked
+
+kernel-test/patches/ubuntu-7.0.0-43-mbp132-backport.patch has no obvious style problems and is ready for submission.

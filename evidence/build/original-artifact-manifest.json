@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "kernel": "7.0.14-mbp132-tb1",
+  "base_package": "linux-source-7.0.0=7.0.0-43.43",
+  "packages": [
+    "packages/linux-headers-7.0.14-mbp132-tb1_7.0.14-1+mbp132tb1_amd64.deb",
+    "packages/linux-image-7.0.14-mbp132-tb1_7.0.14-1+mbp132tb1_amd64.deb"
+  ],
+  "files": {
+    "install-test-kernel.py": "9d029051f1f373ffb4909a4689d45e3c9304ff2ed0740b1d4432fddee44d4952",
+    "package_permissions.py": "39ff5816751608e70f4244b08a9eba5cdfadce9012cb2d4a78ed2b49b1d98962",
+    "rollback-test-kernel.py": "ecfbc49360ef51554da674657e3f227a627ff6335e5ae65751cafd42c538c826",
+    "verify-test-kernel.py": "bcefdd7fb6176f461a549ad250fbf902a4dba8c5370ecb3ea6175a0bdb131717",
+    "promote-test-kernel.py": "ad8633329a61afd059ee4215a14596b0b78af7df5e21381ccb7b6c652aa99ceb",
+    "t1-upgrade/mbp_t1_guard.py": "ee997bfdfd23d7d68b3fb560dcaeed6fe68db6f7f568460eceb07ea1f5a27646",
+    "t1-upgrade/mbp-t1-record-build": "fb65a07165772fd81d9fc7cd1276e73c2ac31a12dd630082ad9648d2254d065e",
+    "t1-upgrade/approved-source.json": "9b68a0941b465c7b32869637cb118557aba099003450c3e83c63fcb18b54a0d7",
+    "t1-upgrade/validated-baseline.json": "c6d3e4483c72be5c516079a1b1ba26181ace68ff458aa3d000bb997897407959",
+    "t1-upgrade/zz-mbp-t1-verify": "acd5b2e3d09b220272ce6f69f441f82a002abe03e4045c589868a66b4b766c3a",
+    "t1-upgrade/header-zz-mbp-t1-verify": "541541eb4883121227355c4964a12dfd9ce9953cfef8f6892c6f310db8fa690d",
+    "t1-upgrade/mbp-t1-s3-handshake.py": "7fbbc3212805e375f4d5b8e64986ef47e710a9273789e97d7bd7257463f6e421",
+    "t1-upgrade/acpidbg": "666769831bc5560c87c1262b85686c28d19fb0b4afdcbaa5a59b9dd39a45586d",
+    "t1-upgrade/acpidbg.json": "2958a84edb6a44755ceb288aa28fbc666359e93be3cd39e8bc47b885f413e1e7",
+    "repair-acpidbg.py": "e42ab235641c129b0c453d6234e9716879c29f177531d093c26dba4366f6b1cb",
+    "patches/ubuntu-7.0.0-43-mbp132-backport.patch": "de9f6dd12f3e1e730b9050f3469170981e03edbd26f933b447bd40806c47a637",
+    "source-changes.json": "6f9380a5ac37eb035295e698a9f14c36954cd6037d0e3e55e474691593333f4e",
+    "packages/linux-headers-7.0.14-mbp132-tb1_7.0.14-1+mbp132tb1_amd64.deb": "e263c0dad8832ad05745302729be42dc1d83f8d971a702f40a482d88cbc3068f",
+    "packages/linux-image-7.0.14-mbp132-tb1_7.0.14-1+mbp132tb1_amd64.deb": "00eebe642e38d756799fa347b3c06559dd83b1adefc1778821782a8d4822a68e"
+  },
+  "test_driver_build": {
+    "apple-ibridge": {
+      "srcversion": "5DE667D5C743E56B1955BA9",
+      "vermagic": "7.0.14-mbp132-tb1 SMP preempt mod_unload modversions",
+      "sha256": "7bc7016006816dc861c3c4b8b96929d6391c99df7ae7d3c929b2aff85b6cf82c"
+    },
+    "apple-touchbar": {
+      "srcversion": "D521E1602E61EB9488ED344",
+      "vermagic": "7.0.14-mbp132-tb1 SMP preempt mod_unload modversions",
+      "sha256": "e27845f6de17a2de20d600c3a20b9c588d5b69f974352d3f200dd044a02cd521"
+    }
+  },
+  "thunderbolt_srcversion": "507751BF5AA88736F6BEE56"
+}

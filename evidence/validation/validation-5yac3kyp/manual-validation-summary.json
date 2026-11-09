@@ -1,0 +1,13 @@
+{
+  "trigger": "manual-lid",
+  "timing": {
+    "schema": 1,
+    "total_elapsed_seconds": 215.108,
+    "awake_seconds": 115.847,
+    "system_suspended_seconds": 99.261,
+    "minimum_suspended_seconds": 30,
+    "duration_met": true
+  },
+  "boot_id": "00000000-0000-4000-8000-000000000003",
+  "success_index": 6
+}

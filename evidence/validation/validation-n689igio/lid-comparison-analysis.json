@@ -1,0 +1,17 @@
+{
+  "same_boot": true,
+  "successful_cycles": 1,
+  "failed_cycles": 0,
+  "actual_suspended_seconds": 104.941,
+  "adapter_controller": "0000:7c:00.0",
+  "adapter_sysfs_path": "/sys/devices/pci0000:00/0000:00:1d.0/0000:79:00.0/0000:7a:02.0/0000:7c:00.0/usb6/6-1/6-1.1/6-1.1:1.0",
+  "usb_transport_mbps": 5000,
+  "ethernet_link_mbps": 1000,
+  "https_passed": true,
+  "lid_closed": "2026-11-08T17:19:10-08:00",
+  "suspend_entry": "2026-11-08T17:19:11-08:00",
+  "lid_opened_and_suspend_exit": "2026-11-08T17:20:57-08:00",
+  "t1_wake_acknowledged": "2026-11-08T17:21:13-08:00",
+  "intermediate_resume": false,
+  "controller_note": "Resume reinitialization now affects inactive controller06; active opposite-side controller7c retained Ethernet, USB3 and accessible PCI config."
+}

@@ -1,0 +1,29 @@
+{
+  "same_boot": true,
+  "successful_cycles": 1,
+  "failed_cycles": 0,
+  "timing": {
+    "schema": 1,
+    "requested_alarm_seconds": 90,
+    "total_elapsed_seconds": 215.108,
+    "awake_seconds": 115.847,
+    "system_suspended_seconds": 99.261,
+    "minimum_suspended_seconds": 75,
+    "duration_met": true
+  },
+  "lid_closed": "2026-11-08T14:22:17-08:00",
+  "suspend_entry": "2026-11-08T14:22:19-08:00",
+  "lid_opened_and_suspend_exit": "2026-11-08T14:23:59-08:00",
+  "t1_wake_acknowledged": "2026-11-08T14:24:15-08:00",
+  "intermediate_resume": false,
+  "post_resume_verifier_passed": true,
+  "ethernet_link_mbps": 1000,
+  "usb_transport_mbps": 5000,
+  "https_passed": true,
+  "interpretation": "One uninterrupted deep-sleep cycle while lid was closed, ending on lid opening. This supports a lid-state-related early-wake issue for open-lid tests, without proving exact firmware cause.",
+  "limitations": [
+    "Single roughly 100-second closed-lid trial; extended and both-side testing remain.",
+    "Unused xHCI 7c controller reinitialized on resume but remained accessible.",
+    "This manually observed comparison is evidence, not one of the promoter accepted timed-test reports."
+  ]
+}

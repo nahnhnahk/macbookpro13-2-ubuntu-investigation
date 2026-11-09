@@ -1,0 +1,24 @@
+name: Source and publication checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    # Isolated root UID/GID ensures the permission-repair fixtures match their
+    # production ownership assumptions. Hardware and firmware calls are mocked.
+    container: python:3.12-bookworm
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: T1 driver and firmware-helper unit tests
+        run: python3 -m unittest discover -s kernel-test/t1-upgrade -p 'test_*.py'
+      - name: Boot selection, permissions and duration unit tests
+        working-directory: kernel-test
+        run: python3 -m unittest test_grub_selection test_suspend_wait test_sleep_duration test_package_permissions
+      - name: Public snapshot privacy and integrity
+        run: python3 tools/check-publication.py

@@ -1,0 +1,21 @@
+Nov 08 14:22:19 example-MacBookPro13-2 kernel: PM: suspend entry (deep)
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: EC: interrupt blocked
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: PM: Preparing to enter system sleep state S3
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: EC: event blocked
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: EC: EC stopped
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: PM: Saving platform NVS memory
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: PM: Low-level resume complete
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: EC: EC started
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: PM: Restoring platform NVS memory
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: PM: Waking up from system sleep state S3
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: EC: interrupt unblocked
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: ACPI: EC: event unblocked
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: xhci_hcd 0000:7c:00.0: xHC error in resume, USBSTS 0x401, Reinit
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: usb usb5: root hub lost power or was reset
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: usb usb6: root hub lost power or was reset
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: r8152 4-2.1:1.0 enx020000000001: carrier on
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: usb 1-3: reset high-speed USB device number 2 using xhci_hcd
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: apple-touchbar 0003:1D6B:0301.0002: tb: Touchbar resumed.
+Nov 08 14:23:59 example-MacBookPro13-2 kernel: PM: suspend exit
+Nov 08 14:24:15 example-MacBookPro13-2 kernel: apple-touchbar 0003:1D6B:0301.0002: tb: Touchbar resumed.
+Nov 08 14:24:15 example-MacBookPro13-2 kernel: r8152 4-2.1:1.0 enx020000000001: carrier on

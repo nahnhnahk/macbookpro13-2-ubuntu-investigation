@@ -1,0 +1,22 @@
+Nov 08 14:22:17 example-MacBookPro13-2 systemd-logind[5057]: Lid closed.
+Nov 08 14:22:17 example-MacBookPro13-2 systemd-logind[5057]: Suspending...
+Nov 08 14:22:18 example-MacBookPro13-2 systemd[1]: Starting systemd-suspend.service - System Suspend...
+Nov 08 14:22:18 example-MacBookPro13-2 mbp-t1-s3-handshake[14552]: mbp-t1: SOCW(0) once
+Nov 08 14:22:19 example-MacBookPro13-2 mbp-t1-s3-handshake[14552]: Evaluating \_SB.PCI0.XHC1.RHUB.ASOC.SOCW
+Nov 08 14:22:19 example-MacBookPro13-2 mbp-t1-s3-handshake[14552]: Evaluation of \_SB.PCI0.XHC1.RHUB.ASOC.SOCW returned object [ADDRESS_REDACTED], external buffer length 18
+Nov 08 14:22:19 example-MacBookPro13-2 mbp-t1-s3-handshake[14552]:  [Integer] = 0000000000000000
+Nov 08 14:22:19 example-MacBookPro13-2 mbp-t1-s3-handshake[14552]: mbp-t1: firmware sleep acknowledged
+Nov 08 14:22:19 example-MacBookPro13-2 systemd-sleep[14560]: Successfully froze unit 'user.slice'.
+Nov 08 14:22:19 example-MacBookPro13-2 systemd-sleep[14560]: Performing sleep operation 'suspend'...
+Nov 08 14:23:59 example-MacBookPro13-2 systemd-logind[5057]: Lid opened.
+Nov 08 14:23:59 example-MacBookPro13-2 systemd-sleep[14560]: System returned from sleep operation 'suspend'.
+Nov 08 14:23:59 example-MacBookPro13-2 systemd-sleep[14560]: Successfully thawed unit 'user.slice'.
+Nov 08 14:24:00 example-MacBookPro13-2 mbp-t1-s3-handshake[14632]: mbp-t1: waiting 15 seconds before firmware wake, matching validated test
+Nov 08 14:24:15 example-MacBookPro13-2 mbp-t1-s3-handshake[14632]: mbp-t1: SOCW(1) once
+Nov 08 14:24:15 example-MacBookPro13-2 mbp-t1-s3-handshake[14632]: Evaluating \_SB.PCI0.XHC1.RHUB.ASOC.SOCW
+Nov 08 14:24:15 example-MacBookPro13-2 mbp-t1-s3-handshake[14632]: Evaluation of \_SB.PCI0.XHC1.RHUB.ASOC.SOCW returned object [ADDRESS_REDACTED], external buffer length 18
+Nov 08 14:24:15 example-MacBookPro13-2 mbp-t1-s3-handshake[14632]:  [Integer] = 0000000000000000
+Nov 08 14:24:15 example-MacBookPro13-2 mbp-t1-s3-handshake[14632]: mbp-t1: firmware wake acknowledged
+Nov 08 14:24:15 example-MacBookPro13-2 systemd[1]: systemd-suspend.service: Deactivated successfully.
+Nov 08 14:24:15 example-MacBookPro13-2 systemd[1]: Finished systemd-suspend.service - System Suspend.
+Nov 08 14:24:15 example-MacBookPro13-2 systemd-logind[5057]: Operation 'suspend' finished.

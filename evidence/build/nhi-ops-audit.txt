@@ -1,0 +1,54 @@
+linux-source-7.0.0/drivers/thunderbolt/domain.c-534-	mutex_lock(&tb->lock);
+linux-source-7.0.0/drivers/thunderbolt/domain.c:535:	if (tb->nhi->ops && tb->nhi->ops->pre_suspend_noirq)
+linux-source-7.0.0/drivers/thunderbolt/domain.c:536:		tb->nhi->ops->pre_suspend_noirq(tb->nhi);
+linux-source-7.0.0/drivers/thunderbolt/domain.c-537-	if (tb->cm_ops->suspend_noirq)
+linux-source-7.0.0/drivers/thunderbolt/domain.c-538-		ret = tb->cm_ops->suspend_noirq(tb);
+linux-source-7.0.0/drivers/thunderbolt/domain.c-539-	if (!ret)
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-985-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:986:	if (nhi->ops && nhi->ops->suspend_noirq) {
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:987:		ret = nhi->ops->suspend_noirq(tb->nhi, wakeup);
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-988-		if (ret)
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-989-			return ret;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-990-	}
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1069-	} else {
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1070:		if (nhi->ops && nhi->ops->resume_noirq) {
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1071:			ret = nhi->ops->resume_noirq(nhi);
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1072-			if (ret)
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1073-				return ret;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1074-		}
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1115-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1116:	if (nhi->ops && nhi->ops->runtime_suspend) {
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1117:		ret = nhi->ops->runtime_suspend(tb->nhi);
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1118-		if (ret)
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1119-			return ret;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1120-	}
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1130-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1131:	if (nhi->ops && nhi->ops->runtime_resume) {
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1132:		ret = nhi->ops->runtime_resume(nhi);
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1133-		if (ret)
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1134-			return ret;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1135-	}
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1165-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1166:	if (nhi->ops && nhi->ops->shutdown)
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1167:		nhi->ops->shutdown(nhi);
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1168-}
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1169-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1170-static void nhi_check_quirks(struct tb_nhi *nhi)
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1358-	nhi->pdev = pdev;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1359:	nhi->ops = (const struct tb_nhi_ops *)id->driver_data;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1360-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1361-	nhi->iobase = pcim_iomap_region(pdev, 0, "thunderbolt");
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1362-	res = PTR_ERR_OR_ZERO(nhi->iobase);
+--
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1391-
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1392:	if (nhi->ops && nhi->ops->init) {
+linux-source-7.0.0/drivers/thunderbolt/nhi.c:1393:		res = nhi->ops->init(nhi);
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1394-		if (res)
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1395-			return res;
+linux-source-7.0.0/drivers/thunderbolt/nhi.c-1396-	}
