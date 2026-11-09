@@ -1,0 +1,55 @@
+--- a/apple-touchbar.c
++++ b/apple-touchbar.c
+@@ -138,6 +138,8 @@
+ 
+ struct appletb_device {
+ 	bool			active;
++	/* Input handler/sysfs remain registered while system-suspended. */
++	bool			initialized;
+ 	struct device		*log_dev;
+ 
+ 	struct hid_field	*mode_field;
+@@ -1086,7 +1088,7 @@
+ 
+ 	if (tb_dev->mode_iface.hdev &&
+ 	    (tb_dev->is_t1 || tb_dev->disp_iface.hdev) &&
+-	    !tb_dev->active) {
++	    !tb_dev->active && !tb_dev->initialized) {
+ 		tb_dev->active = true;
+ 		activated = true;
+ 	}
+@@ -1106,10 +1108,11 @@
+ 
+ 	if (tb_dev->mode_iface.hdev &&
+ 	    (tb_dev->is_t1 || tb_dev->disp_iface.hdev) &&
+-	    tb_dev->active &&
++	    (tb_dev->active || tb_dev->initialized) &&
+ 	    (hdev == tb_dev->mode_iface.hdev ||
+ 	     hdev == tb_dev->disp_iface.hdev)) {
+ 		tb_dev->active = false;
++		tb_dev->initialized = false;
+ 		deactivated = true;
+ 	}
+ 
+@@ -1269,6 +1272,10 @@
+ 			goto unreg_handler;
+ 		}
+ 
++		spin_lock_irqsave(&tb_dev->tb_lock, flags);
++		tb_dev->initialized = true;
++		spin_unlock_irqrestore(&tb_dev->tb_lock, flags);
++
+ 		dev_dbg(tb_dev->log_dev, "Touchbar activated\n");
+ 	}
+ 
+@@ -1303,8 +1310,9 @@
+ 		appletb_set_tb_mode(tb_dev, APPLETB_CMD_MODE_OFF);
+ 		appletb_set_tb_disp(tb_dev, APPLETB_CMD_DISP_ON);
+ 
+-		if (tb_dev->tb_autopm_off)
++		if (tb_dev->tb_autopm_off && tb_dev->disp_iface.hdev)
+ 			hid_hw_power(tb_dev->disp_iface.hdev, PM_HINT_NORMAL);
++		tb_dev->tb_autopm_off = false;
+ 
+ 		dev_info(tb_dev->log_dev, "Touchbar deactivated\n");
+ 	}

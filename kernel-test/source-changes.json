@@ -1,0 +1,38 @@
+{
+  "drivers/pci/pci.c": {
+    "before": "66d6af956074bc76e2c3ac473131a581dbd55b1c14fa968cbc37899f35a641ed",
+    "after": "2f6b76e579ecdd3cebf20f494bacf8c08105a04564c7ae523f54af0bc8161075"
+  },
+  "drivers/acpi/acpica/hwpci.c": {
+    "before": "d78b8fe56d532920cef487cf6c2cd782451110442ca0e75f0c934c35577199c7",
+    "after": "f282a5a3fa415793bcb7d68fd1cb97ec0a63a4d46b6067af7e514783d29d18b1"
+  },
+  "drivers/thunderbolt/acpi.c": {
+    "before": "18f62f5ccef2b8a3cc0b9a2b86629e1fa234a44b226d48ff39f660b6f419dd92",
+    "after": "e1686c8a8eecd20714d5486909530a94f476c0e762162cebe4ec05c3b3098d98"
+  },
+  "drivers/thunderbolt/domain.c": {
+    "before": "dcf73ece8c57c68db03f9ae97a8f24455e4393c194d6dcde3fee39062d4657a0",
+    "after": "bdef8350f92b99f3d80465a877b0afe99d66af8a695dfd0adefd5ca4a1b5a24e"
+  },
+  "drivers/thunderbolt/nhi.c": {
+    "before": "5daaf2ec5c4be7bf89f664ed93ca9c71a135773a13e27c2042c9a40d1647d0e7",
+    "after": "06e7fb801de7d0a4fe34e203da59e8426b6d651cc54c9ce1e5d631f0bc4eaf1e"
+  },
+  "drivers/thunderbolt/nhi.h": {
+    "before": "c77007ab80efc2a9e85708ba7423c5401a2a7dbed470410776b31eb77fc0ff14",
+    "after": "c35543030f45ac6060d0c466932faa6290a81de9b426c9808dab42caea4d7d5f"
+  },
+  "drivers/thunderbolt/switch.c": {
+    "before": "c706ca0468150c52a7b25d41c6774a81c49f38d75d0df470d99ef7683da1d110",
+    "after": "0205a80ac6add4594e52d268a6ac9d265acb7fd35fc0202e6e4e5fb84e59af28"
+  },
+  "drivers/thunderbolt/tb.h": {
+    "before": "bebba1b969d1b91f15d54f5058d99d2e96323890f632edfd08fa6a5038e3e600",
+    "after": "3667e23aabb40dfa1c64001c3082e1bf04a59db8ab129d60a016fc8889518e65"
+  },
+  "drivers/thunderbolt/tb_regs.h": {
+    "before": "cc7ef3dd3339c4fa04c2b6824a15144390aa6b93e0e4ac89d10dadad93447301",
+    "after": "50672eccdf706b91473472cd9ee2a9d65f9351c5f27c929c2f115db07c955355"
+  }
+}

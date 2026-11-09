@@ -1,0 +1,391 @@
+Subject: [PATCH] Restore Apple Alpine Ridge controllers across S3
+
+Backport the tested Thunderbolt suspend preparation and its PCI state
+and ACPICA address-resolution prerequisites to Ubuntu 7.0.0-43.43.
+Retain the older optional NHI operations and the mutex-held hook.
+Original author submissions and signatures are retained separately.
+
+---
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -721,6 +721,28 @@
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(pci_find_dvsec_capability);
++
++static bool pci_dev_config_accessible(struct pci_dev *dev, char *msg)
++{
++	u32 val;
++
++	/*
++	 * If a device's config space is inaccessible, reads typically
++	 * return ~0.  Since Device and Vendor ID are always ~0 for VFs,
++	 * check the Command and Status registers instead.
++	 *
++	 * N.B. This is racy because the device may become inaccessible
++	 * before the next access.
++	 */
++	pci_read_config_dword(dev, PCI_COMMAND, &val);
++	if (PCI_POSSIBLE_ERROR(val)) {
++		pci_warn(dev, "Device config space inaccessible; unable to %s\n",
++				msg);
++		return false;
++	}
++
++	return true;
++}
+ 
+ /**
+  * pci_find_parent_resource - return resource region of parent bus of given
+@@ -1752,10 +1774,23 @@
+  * pci_save_state - save the PCI configuration space of a device before
+  *		    suspending
+  * @dev: PCI device that we're dealing with
++ *
++ * If the config space of @dev is not accessible, the previous snapshot is
++ * kept and reported as saved, as writing back the all-ones values read from
++ * such a device would corrupt it once it is accessible again.
++ *
++ * Return: 0 on success, or a negative errno if a capability could not be
++ * saved.
+  */
+ int pci_save_state(struct pci_dev *dev)
+ {
+ 	int i;
++
++	if (!pci_dev_config_accessible(dev, "save state")) {
++		dev->state_saved = true;
++		return 0;
++	}
++
+ 	/* XXX: 100% dword access ok here? */
+ 	for (i = 0; i < 16; i++) {
+ 		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+@@ -4528,8 +4563,8 @@
+  * @use_lt: Use the LT bit if TRUE, or the DLLLA bit if FALSE.
+  * @active: Waiting for active or inactive?
+  *
+- * Return 0 if successful, or -ETIMEDOUT if status has not changed within
+- * PCIE_LINK_RETRAIN_TIMEOUT_MS milliseconds.
++ * Return 0 if successful, -ENODEV if @pdev is not accessible, or -ETIMEDOUT
++ * if status has not changed within PCIE_LINK_RETRAIN_TIMEOUT_MS milliseconds.
+  */
+ static int pcie_wait_for_link_status(struct pci_dev *pdev,
+ 				     bool use_lt, bool active)
+@@ -4544,6 +4579,9 @@
+ 	end_jiffies = jiffies + msecs_to_jiffies(PCIE_LINK_RETRAIN_TIMEOUT_MS);
+ 	do {
+ 		pcie_capability_read_word(pdev, PCI_EXP_LNKSTA, &lnksta);
++		/* All ones means @pdev is gone; it would look like an active link */
++		if (PCI_POSSIBLE_ERROR(lnksta))
++			return -ENODEV;
+ 		if ((lnksta & lnksta_mask) == lnksta_match)
+ 			return 0;
+ 		msleep(1);
+@@ -4566,8 +4604,9 @@
+  * according to @use_lt.  It is not verified whether the use of the DLLLA
+  * bit is valid.
+  *
+- * Return 0 if successful, or -ETIMEDOUT if training has not completed
+- * within PCIE_LINK_RETRAIN_TIMEOUT_MS milliseconds.
++ * Return 0 if successful, -ENODEV if @pdev is not accessible, or -ETIMEDOUT
++ * if training has not completed within PCIE_LINK_RETRAIN_TIMEOUT_MS
++ * milliseconds.
+  */
+ int pcie_retrain_link(struct pci_dev *pdev, bool use_lt)
+ {
+@@ -4800,8 +4839,10 @@
+ 		if (!dev->link_active_reporting)
+ 			return -ENOTTY;
+ 
++		/* All ones means @dev is gone; it would look like an active link */
+ 		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &status);
+-		if (!(status & PCI_EXP_LNKSTA_DLLLA))
++		if (PCI_POSSIBLE_ERROR(status) ||
++		    !(status & PCI_EXP_LNKSTA_DLLLA))
+ 			return -ENOTTY;
+ 
+ 		return pci_dev_wait(child, reset_type,
+@@ -5061,6 +5102,9 @@
+ 	 * to a non-D0 state anyway.
+ 	 */
+ 	pci_set_power_state(dev, PCI_D0);
++
++	if (!pci_dev_config_accessible(dev, "save state"))
++		return;
+ 
+ 	pci_save_state(dev);
+ 	/*
+diff --git a/drivers/acpi/acpica/hwpci.c b/drivers/acpi/acpica/hwpci.c
+--- a/drivers/acpi/acpica/hwpci.c
++++ b/drivers/acpi/acpica/hwpci.c
+@@ -13,7 +13,6 @@
+ 
+ /* PCI configuration space values */
+ #define PCI_CFG_HEADER_TYPE_REG             0x0E
+-#define PCI_CFG_PRIMARY_BUS_NUMBER_REG      0x18
+ #define PCI_CFG_SECONDARY_BUS_NUMBER_REG    0x19
+ /* PCI header values */
+ #define PCI_HEADER_TYPE_MASK                0x7F
+@@ -358,17 +357,13 @@
+ 		return (AE_OK);
+ 	}
+ 
+-	/* Bridge: Get the Primary bus_number */
+-
+-	status = acpi_os_read_pci_configuration(pci_id,
+-						PCI_CFG_PRIMARY_BUS_NUMBER_REG,
+-						&pci_value, 8);
+-	if (ACPI_FAILURE(status)) {
+-		return (status);
+-	}
+-
++	/*
++	 * Keep the bus inherited from the parent bridge. Its primary bus
++	 * register can still hold its reset value before PCI state has
++	 * been restored during resume. Using it would cache a wrong
++	 * address for the PCI_Config region and the following read.
++	 */
+ 	*is_bridge = TRUE;
+-	pci_id->bus = (u16)pci_value;
+ 
+ 	/* Bridge: Get the Secondary bus_number */
+ 
+diff --git a/drivers/thunderbolt/acpi.c b/drivers/thunderbolt/acpi.c
+--- a/drivers/thunderbolt/acpi.c
++++ b/drivers/thunderbolt/acpi.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/acpi.h>
+ #include <linux/pm_runtime.h>
++#include <linux/suspend.h>
+ 
+ #include "tb.h"
+ 
+@@ -277,6 +278,52 @@
+ int tb_acpi_power_off_retimers(struct tb_port *port)
+ {
+ 	return tb_acpi_retimer_set_power(port, false);
++}
++
++/**
++ * tb_acpi_force_power() - Call SXFP(0) when entering system sleep
++ * @tb: Domain that is being suspended
++ *
++ * On Apple systems with Alpine Ridge the PCIe link to the upstream port
++ * of the controller does not come up on resume from system sleep if a
++ * device is connected, unless SXFP(0) ("Sx Force Power") under the NHI
++ * is called before entering it. Bit 26 of plug events CS_20 must be
++ * clear when SXFP(0) is called, otherwise the router is turned off and
++ * does not come back on resume.
++ *
++ * Must be called with @tb->lock held, before the domain is suspended:
++ * clearing the bit needs the control channel, and SXFP(0) does not help
++ * once the router has been put to sleep.
++ */
++void tb_acpi_force_power(struct tb *tb)
++{
++	struct tb_switch *sw = tb->root_switch;
++	struct acpi_device *adev;
++	acpi_status status;
++
++	if (tb_switch_is_icm(sw))
++		return;
++	/*
++	 * Only when firmware handles system suspend, as in
++	 * quirk_apple_poweroff_thunderbolt(): the OS does not know how to
++	 * power the controller back on. pm_suspend_in_progress() excludes
++	 * hibernation.
++	 */
++	if (!pm_suspend_in_progress() || !pm_suspend_via_firmware())
++		return;
++
++	adev = ACPI_COMPANION(&tb->nhi->pdev->dev);
++	if (!adev || !acpi_has_method(adev->handle, "SXFP"))
++		return;
++
++	if (tb_switch_set_bit26(sw, false))
++		return;
++
++	tb_sw_dbg(sw, "ACPI: calling SXFP\n");
++	status = acpi_execute_simple_method(adev->handle, "SXFP", 0);
++	if (ACPI_FAILURE(status))
++		tb_sw_warn(sw, "ACPI: SXFP failed: %s\n",
++			   acpi_format_exception(status));
+ }
+ 
+ static bool tb_acpi_bus_match(struct device *dev)
+diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
+--- a/drivers/thunderbolt/domain.c
++++ b/drivers/thunderbolt/domain.c
+@@ -532,6 +532,8 @@
+ 	 * we actually have stopped the domain and the control channel.
+ 	 */
+ 	mutex_lock(&tb->lock);
++	if (tb->nhi->ops && tb->nhi->ops->pre_suspend_noirq)
++		tb->nhi->ops->pre_suspend_noirq(tb->nhi);
+ 	if (tb->cm_ops->suspend_noirq)
+ 		ret = tb->cm_ops->suspend_noirq(tb);
+ 	if (!ret)
+diff --git a/drivers/thunderbolt/nhi.c b/drivers/thunderbolt/nhi.c
+--- a/drivers/thunderbolt/nhi.c
++++ b/drivers/thunderbolt/nhi.c
+@@ -10,6 +10,7 @@
+  */
+ 
+ #include <linux/pm_runtime.h>
++#include <linux/platform_data/x86/apple.h>
+ #include <linux/slab.h>
+ #include <linux/errno.h>
+ #include <linux/pci.h>
+@@ -1458,6 +1459,17 @@
+ 	.runtime_resume = nhi_runtime_resume,
+ };
+ 
++/* Apple Alpine Ridge firmware preparation for system suspend. */
++static void ar_nhi_pre_suspend_noirq(struct tb_nhi *nhi)
++{
++	if (x86_apple_machine)
++		tb_acpi_force_power(pci_get_drvdata(nhi->pdev));
++}
++
++static const struct tb_nhi_ops ar_nhi_ops = {
++	.pre_suspend_noirq = ar_nhi_pre_suspend_noirq,
++};
++
+ static struct pci_device_id nhi_ids[] = {
+ 	/*
+ 	 * We have to specify class, the TB bridges use the same device and
+@@ -1489,14 +1501,22 @@
+ 	},
+ 
+ 	/* Thunderbolt 3 */
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_USBONLY_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_USBONLY_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_2C_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_4C_NHI) },
+-	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_USBONLY_NHI) },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_2C_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_4C_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_USBONLY_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_LP_USBONLY_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_2C_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_4C_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
++	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ALPINE_RIDGE_C_USBONLY_NHI),
++	  .driver_data = (kernel_ulong_t)&ar_nhi_ops },
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TITAN_RIDGE_2C_NHI) },
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TITAN_RIDGE_4C_NHI) },
+ 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ICL_NHI0),
+diff --git a/drivers/thunderbolt/nhi.h b/drivers/thunderbolt/nhi.h
+--- a/drivers/thunderbolt/nhi.h
++++ b/drivers/thunderbolt/nhi.h
+@@ -33,6 +33,7 @@
+ /**
+  * struct tb_nhi_ops - NHI specific optional operations
+  * @init: NHI specific initialization
++ * @pre_suspend_noirq: Called before the domain is suspended, with tb->lock held
+  * @suspend_noirq: NHI specific suspend_noirq hook
+  * @resume_noirq: NHI specific resume_noirq hook
+  * @runtime_suspend: NHI specific runtime_suspend hook
+@@ -41,6 +42,7 @@
+  */
+ struct tb_nhi_ops {
+ 	int (*init)(struct tb_nhi *nhi);
++	void (*pre_suspend_noirq)(struct tb_nhi *nhi);
+ 	int (*suspend_noirq)(struct tb_nhi *nhi, bool wakeup);
+ 	int (*resume_noirq)(struct tb_nhi *nhi);
+ 	int (*runtime_suspend)(struct tb_nhi *nhi);
+diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+--- a/drivers/thunderbolt/switch.c
++++ b/drivers/thunderbolt/switch.c
+@@ -4009,6 +4009,38 @@
+ }
+ 
+ /**
++ * tb_switch_set_bit26() - Set or clear bit 26 of plug events CS_20
++ * @sw: Alpine Ridge router
++ * @value: %true to set the bit, %false to clear it
++ *
++ * On Apple systems the firmware can set this bit when it resumes the
++ * NHI. While it is set, SXFP(0) turns the router off and it does not
++ * come back on resume.
++ *
++ * Return: %0 on success, negative errno otherwise.
++ */
++int tb_switch_set_bit26(struct tb_switch *sw, bool value)
++{
++	unsigned int offset = sw->cap_plug_events + TB_PLUG_EVENTS_CS_20;
++	u32 val;
++	int ret;
++
++	ret = tb_sw_read(sw, &val, TB_CFG_SWITCH, offset, 1);
++	if (ret)
++		return ret;
++
++	if (!!(val & TB_PLUG_EVENTS_CS_20_BIT26) == value)
++		return 0;
++
++	if (value)
++		val |= TB_PLUG_EVENTS_CS_20_BIT26;
++	else
++		val &= ~TB_PLUG_EVENTS_CS_20_BIT26;
++
++	return tb_sw_write(sw, &val, TB_CFG_SWITCH, offset, 1);
++}
++
++/**
+  * tb_switch_xhci_disconnect() - Disconnect internal xHCI
+  * @sw: Router whose xHCI to disconnect
+  *
+diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
+--- a/drivers/thunderbolt/tb.h
++++ b/drivers/thunderbolt/tb.h
+@@ -1093,6 +1093,7 @@
+ 
+ int tb_switch_xhci_connect(struct tb_switch *sw);
+ void tb_switch_xhci_disconnect(struct tb_switch *sw);
++int tb_switch_set_bit26(struct tb_switch *sw, bool value);
+ 
+ int tb_port_state(struct tb_port *port);
+ int tb_wait_for_port(struct tb_port *port, bool wait_if_unplugged);
+@@ -1515,6 +1516,7 @@
+ 
+ int tb_acpi_init(void);
+ void tb_acpi_exit(void);
++void tb_acpi_force_power(struct tb *tb);
+ int tb_acpi_power_on_retimers(struct tb_port *port);
+ int tb_acpi_power_off_retimers(struct tb_port *port);
+ #else
+@@ -1528,6 +1530,7 @@
+ 
+ static inline int tb_acpi_init(void) { return 0; }
+ static inline void tb_acpi_exit(void) { }
++static inline void tb_acpi_force_power(struct tb *tb) { }
+ static inline int tb_acpi_power_on_retimers(struct tb_port *port) { return 0; }
+ static inline int tb_acpi_power_off_retimers(struct tb_port *port) { return 0; }
+ #endif
+diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
+--- a/drivers/thunderbolt/tb_regs.h
++++ b/drivers/thunderbolt/tb_regs.h
+@@ -564,6 +564,9 @@
+ #define TB_PLUG_EVENTS_CS_1_LOW_DPIN_DISABLE	BIT(5)
+ #define TB_PLUG_EVENTS_CS_1_HIGH_DPIN_DISABLE	BIT(6)
+ 
++#define TB_PLUG_EVENTS_CS_20			0x14
++#define TB_PLUG_EVENTS_CS_20_BIT26		BIT(26)
++
+ #define TB_PLUG_EVENTS_PCIE_WR_DATA		0x1b
+ #define TB_PLUG_EVENTS_PCIE_CMD			0x1c
+ #define TB_PLUG_EVENTS_PCIE_CMD_DW_OFFSET_MASK	GENMASK(9, 0)

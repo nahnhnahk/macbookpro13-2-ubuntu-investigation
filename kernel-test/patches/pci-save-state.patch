@@ -1,0 +1,103 @@
+pci_save_state() saves the standard header without checking whether the
+device responded.  For an inaccessible device, each read returns all
+ones, overwriting the previous snapshot, which pci_restore_state()
+writes back after resume.  On a bridge, that sets every writable bit of
+the Bridge Control register, Secondary Bus Reset included, and sets the
+primary, secondary and subordinate bus numbers to 0xff, which cuts off
+everything below it.  This was seen on a MacBookPro14,3, where a bridge
+that stopped responding during system suspend came back after resume
+with bus numbers ff/ff/ff.
+
+Commit e18d1abc3bff ("PCI: Avoid saving config space state if
+inaccessible") added pci_dev_config_accessible() and checks it before a
+reset.  Check it in pci_save_state() itself, so that system suspend is
+covered as well.
+
+If it is not accessible, keep the previous snapshot, mark the state as
+saved and return 0.  This avoids changing callers or making the PM core
+warn about a low-power device without saved state.  pci_bus_add_device()
+saves the state when the device is added, so normally a snapshot exists.
+That snapshot can be older than the last values the device had, for
+example if its driver changed the Command register after the last
+successful save.
+
+Assisted-by: LLM
+Signed-off-by: Francisco Beltrán Millalén <fbeltranmillalen@gmail.com>
+---
+v3:
+- Keep the previous snapshot and return 0 instead of returning -EIO, so
+  that callers see no change.  Returning -EIO changed what some drivers
+  do, as described on v2:
+  https://lore.kernel.org/all/20261011210451.12129-1-fbeltranmillalen@gmail.com/
+- Check accessibility only once, at the start of pci_save_state(), and
+  drop the temporary copy of the header and the second check, as Bjorn
+  suggested.
+- pci_dev_save_and_disable() is left as it is.  Bjorn suggested using
+  the return value of pci_save_state() there, and on v2 I said I would.
+  This version returns 0 for an inaccessible device, so the existing
+  check stays.  It also keeps that function from clearing the Command
+  register of a device that does not respond.
+- The commit message no longer presents this as a fix for the
+  Thunderbolt controller dropping off during suspend.
+- Darrell's Tested-by from v2 is not carried over, as the code changed.
+- Farhan pointed out [1] that in 2025 Lukas was concerned about checking
+  in pci_save_state() itself, as callers that don't need the check pay
+  for it [2].  The check is one config read on top of the 16 for the
+  header and those for the capabilities.  System suspend saves the state
+  both from the PCI core and from the suspend callbacks of many drivers,
+  so checking in every caller isn't practical.
+
+About the snapshot that is kept, which I have not tested beyond the
+case in the cover letter:
+- For a bridge, bus numbers and windows changed after the last
+  successful save, for example by hotplug, would be written back with
+  their older values.
+- The snapshot from pci_bus_add_device() is taken before the driver
+  probes, so a device that was never saved again since then gets the
+  pre-probe values.
+- A device that became inaccessible before it was added has no real
+  snapshot: the saved header is all zeros, which is what would be
+  written back.
+
+[1] https://lore.kernel.org/all/00000000-0000-4000-8000-000000000002@linux.ibm.com/
+[2] https://lore.kernel.org/all/aOQX6ZTMvekd6gWy@wunner.de/
+
+v2:
+- Use pci_dev_config_accessible() instead of reading the Vendor ID,
+  which always reads as all ones on SR-IOV VFs: v1 refused to save the
+  state of every VF.
+- Do the second check after saving the capabilities, and set
+  state_saved only if both checks pass.
+
+ drivers/pci/pci.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index a62af7320539..eacaa1e71a83 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1794,10 +1794,23 @@ static void pci_restore_pcix_state(struct pci_dev *dev)
+  * pci_save_state - save the PCI configuration space of a device before
+  *		    suspending
+  * @dev: PCI device that we're dealing with
++ *
++ * If the config space of @dev is not accessible, the previous snapshot is
++ * kept and reported as saved, as writing back the all-ones values read from
++ * such a device would corrupt it once it is accessible again.
++ *
++ * Return: 0 on success, or a negative errno if a capability could not be
++ * saved.
+  */
+ int pci_save_state(struct pci_dev *dev)
+ {
+ 	int i;
++
++	if (!pci_dev_config_accessible(dev, "save state")) {
++		dev->state_saved = true;
++		return 0;
++	}
++
+ 	/* XXX: 100% dword access ok here? */
+ 	for (i = 0; i < 16; i++) {
+ 		pci_read_config_dword(dev, i * 4, &dev->saved_config_space[i]);
+

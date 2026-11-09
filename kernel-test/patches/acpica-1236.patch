@@ -1,0 +1,61 @@
+From e7e1550b5a39c854a397585e5f6216b143e5ddfb Mon Sep 17 00:00:00 2001
+From: Maxim Polivoda <u7w2ab@gmail.com>
+Date: Thu, 17 Sep 2026 03:24:39 +0100
+Subject: [PATCH] Derive the bus number of PCI bridges from the parent bridge
+
+AcpiHwGetPciDeviceInfo() walks from the PCI root bridge down to the device that owns a PCI_Config operation region. For every PCI bridge on the path, the bus number of the bridge is first taken from the secondary bus number of its parent bridge (or from _BBN of the root bridge), but it is then replaced with the value of the primary bus number register of the bridge itself.
+
+For a configured bridge that register holds the same value, because it is read at the address that was derived from the parent. However, right after a bridge has been powered up, for example when it transitions from D3cold to D0 while its _PS0 method is executing, its bus number registers read as zero until the OS restores its configuration space. If a PCI_Config region of that bridge is first used in that window, the derived PCI ID refers to bus 0, and because the PCI ID is cached for the lifetime of the region, all subsequent accesses to that region go to the wrong device.
+
+This has been observed on MacBookPro16,1, where the Thunderbolt 3 bridges (\_SB.PCI0.PEG1.UPSB, \_SB.PCI0.PEG2.UPSB) are powered off during system suspend. During the first resume after boot, UPSB._PS0 sets up the PCI_Config regions of UPSB while 06:00.0 (and 7c:00.0) read primary bus 0, so the regions resolve to 00:00.0, the host bridge. The vendor-specific mailbox that UPSB._PS0 and NHI0._PS0 use (offset 0x530, polled by the CIOR and CIOW methods) then never completes: 300,240 reads of 0xFFFFFFFF from 00:00.0 were traced during a single resume, and every resume took about 18 seconds longer than necessary.
+
+Do not read the primary bus number register and keep the bus number inherited from the parent bridge instead. Remove the now unused PCI_CFG_PRIMARY_BUS_NUMBER_REG definition.
+
+With this change, the same regions resolve to 06:00.0 and 7c:00.0, the mailbox commands complete (180 reads in total, no timeouts), and the early device resume phase on that machine drops from 19.2 to 2.0 seconds.
+
+Signed-off-by: Maxim Polivoda <u7w2ab@gmail.com>
+---
+ source/components/hardware/hwpci.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/source/components/hardware/hwpci.c b/source/components/hardware/hwpci.c
+index 00c3c809a2..613fd3f633 100644
+--- a/source/components/hardware/hwpci.c
++++ b/source/components/hardware/hwpci.c
+@@ -22,7 +22,6 @@
+ /* PCI configuration space values */
+ 
+ #define PCI_CFG_HEADER_TYPE_REG             0x0E
+-#define PCI_CFG_PRIMARY_BUS_NUMBER_REG      0x18
+ #define PCI_CFG_SECONDARY_BUS_NUMBER_REG    0x19
+ 
+ /* PCI header values */
+@@ -407,17 +406,18 @@ AcpiHwGetPciDeviceInfo (
+         return (AE_OK);
+     }
+ 
+-    /* Bridge: Get the Primary BusNumber */
+-
+-    Status = AcpiOsReadPciConfiguration (PciId,
+-        PCI_CFG_PRIMARY_BUS_NUMBER_REG, &PciValue, 8);
+-    if (ACPI_FAILURE (Status))
+-    {
+-        return (Status);
+-    }
+-
++    /*
++     * Bridge: The bus number of the bridge itself is already known, either
++     * from the secondary bus number of the parent bridge or from the _BBN
++     * of the root bridge. Do not replace it with the primary bus number
++     * register of the bridge: that register reads as zero after the bridge
++     * has been powered up (e.g. from D3cold, while its _PS0 is executing)
++     * and before the OS has restored its configuration space. The derived
++     * PCI ID would then refer to bus 0, and since it is cached for the
++     * lifetime of the operation region, all later accesses would go to
++     * the wrong device.
++     */
+     *IsBridge = TRUE;
+-    PciId->Bus = (UINT16) PciValue;
+ 
+     /* Bridge: Get the Secondary BusNumber */
+ 

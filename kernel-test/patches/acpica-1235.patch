@@ -1,0 +1,75 @@
+From 615f1b568156cf6a58040839f4ade773d8da7cf9 Mon Sep 17 00:00:00 2001
+From: clowdyffs <alex@clowdydev.com>
+Date: Sat, 19 Sep 2026 20:55:46 -0400
+Subject: [PATCH] Preserve the parent-derived PCI bus when inspecting bridges
+
+A PCI_Config operation region first used during a bridge's ACPI power-up
+can be initialized before the PCI core restores that bridge's bus-number
+registers. AcpiHwGetPciDeviceInfo() has already located the bridge using
+its parent's secondary bus. Reading a zero Primary Bus Number and
+assigning it to PciId->Bus then misdirects the following secondary-bus
+read and caches the wrong region address.
+
+On MacBookPro14,1, first-resume tracing records UPSB at 04:00.0 with
+header type 1 and primary bus 0. Region derivation returns 00:00.0
+successfully. The H530 region then directs 150,120 mailbox polls to the
+host bridge; three exhausted firmware retry sequences cost about seven
+seconds. Two downstream-bridge regions show the same address loss.
+
+Keep the address already derived from the parent and remove the
+unnecessary primary-bus read. The secondary-bus read then uses that same
+correct bridge address. This changes neither the PCI power sequence nor
+firmware retry limits.
+
+Hardware validation on MacBookPro14,1 confirms correct PCI region
+addresses and successful mailbox access: the three firmware retry
+sequences fell from 6.939 seconds to 1.836 milliseconds. A replay of the
+actual C helper also corrects two captured reset-primary cases and
+preserves six comparison cases.
+
+A separate Thunderbolt controller power-transition failure still occurs
+with this correction. This change fixes PCI region address derivation.
+
+Fixes: 08fd52445bf4 ("Obsolete the AcpiOsDerivePciId OSL interface.")
+Assisted-by: LLM
+Signed-off-by: clowdyffs <alex@clowdydev.com>
+---
+ source/components/hardware/hwpci.c | 17 ++++++-----------
+ 1 file changed, 6 insertions(+), 11 deletions(-)
+
+diff --git a/source/components/hardware/hwpci.c b/source/components/hardware/hwpci.c
+index 00c3c809a2..c6486487ce 100644
+--- a/source/components/hardware/hwpci.c
++++ b/source/components/hardware/hwpci.c
+@@ -22,7 +22,6 @@
+ /* PCI configuration space values */
+ 
+ #define PCI_CFG_HEADER_TYPE_REG             0x0E
+-#define PCI_CFG_PRIMARY_BUS_NUMBER_REG      0x18
+ #define PCI_CFG_SECONDARY_BUS_NUMBER_REG    0x19
+ 
+ /* PCI header values */
+@@ -407,17 +406,13 @@ AcpiHwGetPciDeviceInfo (
+         return (AE_OK);
+     }
+ 
+-    /* Bridge: Get the Primary BusNumber */
+-
+-    Status = AcpiOsReadPciConfiguration (PciId,
+-        PCI_CFG_PRIMARY_BUS_NUMBER_REG, &PciValue, 8);
+-    if (ACPI_FAILURE (Status))
+-    {
+-        return (Status);
+-    }
+-
++    /*
++     * Keep the bus derived from the parent bridge. The Primary Bus Number
++     * register may still contain its reset value when a region is first
++     * accessed during resume, before the PCI core restores bridge state.
++     * Replacing the derived bus would also misdirect the following read.
++     */
+     *IsBridge = TRUE;
+-    PciId->Bus = (UINT16) PciValue;
+ 
+     /* Bridge: Get the Secondary BusNumber */
+ 
