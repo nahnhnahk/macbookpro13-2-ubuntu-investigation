@@ -1,0 +1,64 @@
+Backport of "wifi: brcmfmac: pcie: restore FEM control pin mode on Apple BCM43602"
+[PATCH wireless-next v3] by Sergey Armodin, 2026-11-01, Acked-by: Arend van Spriel
+https://lore.kernel.org/linux-wireless/20261101172011.1591620-1-dolph-in@yandex.ru/
+
+Local differences from v3: the chipcontrol value is always logged with
+dev_info ("femctrl: ...") so the fix can be verified without dynamic debug,
+and the 0x0157 comment also names MacBookPro13,2 (verified on this machine).
+Applies to Ubuntu linux-source-7.0.0 (7.0.0-43.43, upstream 7.0.14).
+
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -726,9 +726,52 @@
+ }
+ 
+ 
++/* ChipCommon chipcontrol bit selecting the discrete FEM control pin mode */
++#define BRCMF_CC_CHIPCTL_4360_DISCRETE_FEMCTRL_MODE	BIT(4)
++
++/* Backport of upstream "wifi: brcmfmac: pcie: restore FEM control pin mode on
++ * Apple BCM43602" (v3, Acked-by Arend van Spriel). On these Apple boards 5 GHz
++ * on the BCM43602 only works with the discrete FEM control pin mode selected
++ * in ChipCommon chipcontrol. Boot firmware (EFI) sets it; a power-on reset of
++ * the chip (S3 on battery) clears it and the Wi-Fi firmware does not set it
++ * again. Restore it before the firmware is started.
++ * Local change: always log the value (dev_info) so the fix can be verified.
++ */
++static void brcmf_pcie_43602_apple_femctrl(struct brcmf_pciedev_info *devinfo)
++{
++	struct pci_dev *pdev = devinfo->pdev;
++	u32 val;
++
++	if (pdev->subsystem_vendor != PCI_VENDOR_ID_APPLE)
++		return;
++
++	switch (pdev->subsystem_device) {
++	case 0x0157:	/* MacBookPro14,2, MacBookPro13,2 */
++	case 0x015a:	/* MacBookPro13,3 */
++	case 0x0173:	/* MacBookPro14,3 */
++		break;
++	default:
++		return;
++	}
++
++	brcmf_pcie_select_core(devinfo, BCMA_CORE_CHIPCOMMON);
++	val = READCC32(devinfo, chipcontrol);
++	if (val & BRCMF_CC_CHIPCTL_4360_DISCRETE_FEMCTRL_MODE) {
++		dev_info(&pdev->dev, "femctrl: chipcontrol 0x%08x, discrete FEM control mode already set\n", val);
++		return;
++	}
++
++	WRITECC32(devinfo, chipcontrol,
++		  val | BRCMF_CC_CHIPCTL_4360_DISCRETE_FEMCTRL_MODE);
++	dev_info(&pdev->dev, "femctrl: chipcontrol 0x%08x was CLEARED, restored to 0x%08x\n",
++		 val, READCC32(devinfo, chipcontrol));
++}
++
+ static int brcmf_pcie_enter_download_state(struct brcmf_pciedev_info *devinfo)
+ {
+ 	if (devinfo->ci->chip == BRCM_CC_43602_CHIP_ID) {
++		brcmf_pcie_43602_apple_femctrl(devinfo);
++
+ 		brcmf_pcie_select_core(devinfo, BCMA_CORE_ARM_CR4);
+ 		brcmf_pcie_write_reg32(devinfo, BRCMF_PCIE_ARMCR4REG_BANKIDX,
+ 				       5);

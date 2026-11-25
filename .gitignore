@@ -24,3 +24,4 @@ kernel-test/t1-upgrade/acpidbg
 .env.*
 
 touchbar-fn/src/
+wifi/src/

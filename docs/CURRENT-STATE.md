@@ -1,4 +1,4 @@
-# Current state — 2026-11-08
+# Current state — 2026-11-25
 
 This page supersedes historical “current status” paragraphs elsewhere in the archive.
 
@@ -16,6 +16,7 @@ This page supersedes historical “current status” paragraphs elsewhere in the
 | USB 3 hub | Genesys `05e3:0626` |
 | Ethernet | Realtek RTL8153 `0bda:8153`, existing `r8152` driver |
 | Audio codec | Cirrus Logic CS8409 `0x10138409`, subsystem `0x106b3600` |
+| Wi-Fi | Broadcom BCM43602 `14e4:43ba`, subsystem `106b:0157`, firmware 7.35.177.61 |
 | Tested controller trees | Intel Alpine Ridge xHCI `8086:15d4`, `0000:06:00.0` and `0000:7c:00.0` |
 
 ## Installed behavior
@@ -30,6 +31,7 @@ This page supersedes historical “current status” paragraphs elsewhere in the
 - The original Ethernet profile uses a tested distinct DHCP identity to avoid a verified duplicate lease/address. The exact identity is omitted from this public archive. Router-side cleanup is still separate.
 - Internal speakers use an Apple-patched `snd-hda-codec-cs8409` ([davidjo/snd_hda_macbookpro](https://github.com/davidjo/snd_hda_macbookpro) `89b22ff`). It is installed manually in `/lib/modules/7.0.14-mbp132-tb1/updates/cirrus/` and confirmed playing. DKMS `snd_hda_macbookpro/0.1` is still only `added`. Stock fallback kernels load the silent in-tree driver. See [AUDIO.md](AUDIO.md).
 - The Touch Bar Fn key works with keyd running. A patched `applespi` (DKMS `applespi-fn/0.1`, installed for `7.0.14-mbp132-tb1` only) reports Fn on a separate "Apple SPI Fn Key" device that keyd does not grab. keyd's `[ids]` excludes `0000:0001`. The pinned T1 driver sources are unchanged. See [TOUCHBAR-FN.md](TOUCHBAR-FN.md).
+- Wi-Fi uses a patched `brcmfmac` in `/lib/modules/7.0.14-mbp132-tb1/updates/brcmfmac-femctrl/`, backporting the upstream "restore FEM control pin mode on Apple BCM43602" fix. Battery deep sleep clears the chip's 5 GHz front-end control bit; the driver restores it on each resume. Confirmed on two battery sleeps. Stock fallback kernels load the in-tree driver and keep the bug. See [WIFI.md](WIFI.md).
 - GRUB's default explicitly selects the patched kernel. The machine's actual GRUB disk UUID is replaced in the public example. Promotion was independently confirmed by reading the installed configuration; some historical snapshots still say “not promoted.”
 
 ## Validated
@@ -47,3 +49,5 @@ The patched kernel's battery efficiency has not been measured by a controlled lo
 The speaker fix is tied to `7.0.14-mbp132-tb1` until the DKMS setup in [AUDIO.md](AUDIO.md) is completed. Headphones, microphones and speaker behavior after deep-sleep resume have not been checked with the patched audio driver.
 
 The Fn key fix was confirmed after a live module reload only. Reboot, deep-sleep resume, the typing keep-alive and the stock fallback kernels are unchecked; the stock kernels still use the in-tree `applespi`.
+
+The Wi-Fi fix is tied to `7.0.14-mbp132-tb1` and has been confirmed on two short battery sleeps only. Longer and overnight battery sleeps, AC sleeps with the patched driver and the stock kernels are unchecked.

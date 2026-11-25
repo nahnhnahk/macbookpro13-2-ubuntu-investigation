@@ -14,6 +14,8 @@
 
 `audio-2026-11-08/` records the internal-speaker diagnosis, the failed DKMS build, the rootless build tests and before/after kernel-log excerpts.
 
+`wifi-2026-11-25/` records the Wi-Fi failure signature, the battery/AC statistics, the unsuccessful recovery tests, the band probe and the patched driver's before/after register log.
+
 `touchbar-fn-2026-11-08/` records the keyd grab diagnosis for the Touch Bar Fn key, the build/reproducibility checks and before/after input-device and keyd excerpts.
 
 Original report semantics are preserved. A `result.json` with `suspend_requested: null` is a post-wake health check; its independent comparison snapshots and journals establish sleep duration. A `manual-validation-summary.json` is derived from those raw preserved fields. Kernel excerpts were limited to recovery-related events, and broad host snapshots were omitted or narrowed.

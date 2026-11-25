@@ -1,5 +1,11 @@
 # Change log
 
+## Wi-Fi after battery deep sleep fix — 2026-11-25
+
+- Found why Wi-Fi could not rejoin after some deep sleeps: on battery the BCM43602 loses power in S3, which clears ChipCommon chipcontrol bit 4 (discrete 5 GHz FEM control). Boot firmware sets it; nothing in Linux restores it, so 5 GHz joins fail until reboot.
+- Added a backport of the upstream brcmfmac patch "restore FEM control pin mode on Apple BCM43602" (v3, Acked-by Broadcom) with value logging, plus build/install/uninstall helpers and a read-only verification script.
+- Recorded the confirmed result on two battery sleeps and the investigation's failed hypotheses, with sanitized evidence. Longer sleeps and stock kernels remain unvalidated.
+
 ## Touch Bar Fn key fix — 2026-11-08
 
 - Found why holding Fn did not switch the Touch Bar to F-keys: keyd's exclusive grab of the Apple SPI Keyboard stops the kernel from delivering its events to the Touch Bar driver's input handler, and keyd does not re-emit `KEY_FN`. The same cause could let the bar time out while typing.
